@@ -1,0 +1,40 @@
+{
+  "manifest_version": 3,
+  "name": "UF GPA Calculator",
+  "description": "Project your UF GPA by blending current totals and pending classes.",
+  "version": "0.2.0",
+  "action": {
+    "default_title": "UF GPA Calculator",
+    "default_popup": "popup/index.html",
+    "default_icon": {
+      "16": "uf.png",
+      "48": "uf.png",
+      "128": "uf.png"
+    }
+  },
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://one.uf.edu/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://one.uf.edu/*"
+      ],
+      "js": [
+        "content-script/main.ts"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "uf.png",
+    "48": "uf.png",
+    "128": "uf.png"
+  }
+}
+
+
+
