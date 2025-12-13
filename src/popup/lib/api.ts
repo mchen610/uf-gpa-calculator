@@ -18,7 +18,9 @@ async function setCachedTranscript(transcript: UnofficialTranscriptResponse): Pr
 
 async function fetchTranscript(): Promise<UnofficialTranscriptResponse | undefined> {
   const [{ id, url }] = await chrome.tabs.query({ active: true, currentWindow: true })
-  if (id === undefined || !url?.includes('one.uf.edu')) return undefined
+  if (id === undefined || url === undefined) return undefined
+
+  if (!url.includes('one.uf.edu')) return undefined
 
   try {
     return await chrome.tabs.sendMessage(id, { type: 'getTranscript' })
