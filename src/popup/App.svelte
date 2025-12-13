@@ -1,8 +1,9 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte'
   import type { DegreeSnapshot, PendingCourse, ProjectionDetails } from '$lib/types'
-  import { GRADE_POINTS, normalizeGradeInput } from '$lib/grades'
-  import { sum, cn, round } from '$lib/utils'
+  import { GRADE_POINTS, normalizeGradeInput, computeProjection } from '$lib/grades'
+  import { getDegreeSnapshot } from './api'
+  import { cn, round } from '$lib/utils'
   import { typedKeys } from '$lib/typeUtils'
   import { X, Settings2 } from 'lucide-svelte'
 
@@ -30,19 +31,6 @@
   $: projection = computeProjection(pendingCourses)
 
   let currentUrl = ''
-
-  function computeProjection(courses: PendingCourse[]): ProjectionDetails {
-    const userInputs = courses.map((course) => {
-      const { credits, grade } = course
-      const points = grade ? GRADE_POINTS[grade] : undefined
-      return points !== undefined ? { credits, points } : undefined
-    })
-
-    return {
-      addedGradePoints: sum(userInputs, (input) => (input === undefined ? 0 : input.points * input.credits)),
-      addedCreditHours: sum(userInputs, (input) => (input === undefined ? 0 : input.credits)),
-    }
-  }
 
   function getInputElementId(index: number): string {
     return `grade-input-${index}`
@@ -181,24 +169,15 @@
   }
 
   async function fetchSnapshot(): Promise<void> {
-    const [tab] = await chrome.tabs.query({
-      active: true,
-      currentWindow: true,
-    })
-    if (tab.id === undefined || tab.url === undefined) {
-      return
+    const { snapshot, url } = await getDegreeSnapshot()
+    if (url) {
+      currentUrl = url
     }
 
-    currentUrl = tab.url
-    try {
-      const data = await chrome.tabs.sendMessage(tab.id, {
-        type: 'getSnapshot',
-      })
-      if (data) {
-        applySnapshot(data)
-        clearInterval(pollingInterval)
-      }
-    } catch {}
+    if (snapshot) {
+      applySnapshot(snapshot)
+      clearInterval(pollingInterval)
+    }
   }
 
   async function applySnapshot(data: DegreeSnapshot): Promise<void> {
