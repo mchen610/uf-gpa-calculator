@@ -4,7 +4,7 @@ import App from './App.svelte'
 const target = document.getElementById('app')
 
 if (!target) {
-  throw new Error('UF GPA Calculator: failed to find mount element')
+  throw new Error('one.uf gpa calculator: failed to find mount element')
 }
 
 export const app = new App({
