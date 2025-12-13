@@ -20,8 +20,6 @@
   let advancedMode = false
   let showOptions = false
 
-  let anyInputFocused = false
-
   let closeTimeout: ReturnType<typeof setTimeout>
   let pollingInterval: ReturnType<typeof setInterval>
   let hasLoaded = false
@@ -35,18 +33,6 @@
     closeTimeout = setTimeout(() => {
       showOptions = false
     }, 150)
-  }
-
-  function handleListFocusIn() {
-    anyInputFocused = true
-  }
-
-  function handleListFocusOut(event: FocusEvent) {
-    const list = event.currentTarget as HTMLElement
-    const related = event.relatedTarget as Node | null
-    if (!related || !list.contains(related)) {
-      anyInputFocused = false
-    }
   }
 
   let projection: ProjectionDetails = {
@@ -405,7 +391,7 @@
         {#if pendingCourses.length === 0}
           <div class="py-6 text-center text-xs text-slate-400">Sync with your UF grade summary to see classes.</div>
         {:else}
-          <ul class="flex flex-col gap-1" on:focusin={handleListFocusIn} on:focusout={handleListFocusOut}>
+          <ul class="flex flex-col gap-1 group">
             {#each pendingCourses as course, index}
               <li class="flex items-center gap-3 py-2">
                 <input
@@ -415,7 +401,8 @@
                     'text-center text-sm',
                     'bg-transparent text-slate-600 placeholder:text-slate-300',
                     'outline-none transition-colors focus:placeholder:text-transparent focus:border-indigo-600',
-                    doAllAtOnce && anyInputFocused ? 'border-indigo-600' : 'border-slate-300',
+                    'border-slate-300',
+                    doAllAtOnce && 'group-focus-within:border-indigo-600',
                   )}
                   type="text"
                   value={rawUserInputs[course.code] ?? ''}
