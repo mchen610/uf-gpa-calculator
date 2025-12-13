@@ -163,7 +163,7 @@
     }
     if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
       focusInput(0)
-      handleHorizontalNavigation(event, pendingCourses[0].id)
+      handleHorizontalNavigation(event, pendingCourses[0].code)
       return
     }
 
@@ -191,7 +191,7 @@
     if (doAllAtOnce) {
       const newInputs = { ...rawUserInputs }
       for (const course of pendingCourses) {
-        newInputs[course.id] = sanitized
+        newInputs[course.code] = sanitized
       }
       rawUserInputs = newInputs
       pendingCourses = pendingCourses.map((c) => ({ ...c, grade: normalized }))
@@ -200,7 +200,7 @@
         ...rawUserInputs,
         [courseId]: sanitized,
       }
-      pendingCourses = pendingCourses.map((c) => (c.id === courseId ? { ...c, grade: normalized } : c))
+      pendingCourses = pendingCourses.map((c) => (c.code === courseId ? { ...c, grade: normalized } : c))
     }
   }
 
@@ -402,15 +402,18 @@
                     doAllAtOnce && anyInputFocused ? 'border-indigo-600' : 'border-slate-300',
                   )}
                   type="text"
-                  value={rawUserInputs[course.id] ?? ''}
-                  on:input={(event) => setGradeInput(course.id, event.currentTarget.value)}
-                  on:keydown={(event) => handleInputKeydown(event, index, course.id)}
+                  value={rawUserInputs[course.code] ?? ''}
+                  on:input={(event) => setGradeInput(course.code, event.currentTarget.value)}
+                  on:keydown={(event) => handleInputKeydown(event, index, course.code)}
                   maxlength="2"
                   placeholder={'X'}
                 />
                 <div class="flex flex-col">
-                  <span class="text-xs text-slate-700">{course.title}</span>
-                  <span class="text-xs text-slate-400">{course.credits} credits</span>
+                  <p>
+                    <span class="text-xs text-slate-700">{course.title}</span>
+                    <span class="text-xxs text-slate-400">{course.code}</span>
+                  </p>
+                  <p class="text-xs text-indigo-400">{course.credits} credits</p>
                 </div>
               </li>
             {/each}

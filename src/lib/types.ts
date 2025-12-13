@@ -1,7 +1,7 @@
 import type { Grade } from './grades'
 
 export interface PendingCourse {
-  id: string
+  code: string
   title: string
   credits: number
   grade: Grade | undefined
