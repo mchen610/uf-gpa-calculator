@@ -11,6 +11,7 @@ export interface DegreeSnapshot {
   gradePoints: number | undefined
   creditHours: number | undefined
   pendingCourses: PendingCourse[]
+  term: string
 }
 
 export interface ProjectionDetails {

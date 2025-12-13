@@ -10,9 +10,14 @@
   const ALL_POSSIBLE_GRADES = ['', ...typedKeys(GRADE_POINTS)]
   const GRADES_WITHOUT_PLUSES_OR_MINUSES = ALL_POSSIBLE_GRADES.filter((g) => g.length <= 1)
 
-  let current: Omit<DegreeSnapshot, 'pendingCourses'> = {
+  let current: {
+    gradePoints: number | undefined
+    creditHours: number | undefined
+    term: string | undefined
+  } = {
     gradePoints: undefined,
     creditHours: undefined,
+    term: undefined,
   }
   let pendingCourses: PendingCourse[] = []
 
@@ -235,9 +240,9 @@
   }
 
   async function applySnapshot(data: DegreeSnapshot): Promise<void> {
-    const { gradePoints, creditHours } = data
+    const { gradePoints, creditHours, term } = data
     rawUserInputs = {}
-    current = { gradePoints, creditHours }
+    current = { gradePoints, creditHours, term }
     pendingCourses = data.pendingCourses
 
     await tick()
@@ -256,11 +261,16 @@
 <main class={cn('min-w-96', 'font-sans bg-white text-slate-800', 'selection:bg-indigo-50 selection:text-indigo-900')}>
   <div class="mx-auto w-full max-w-md flex-col p-6 pb-3 space-y-2">
     <!-- Header -->
-    <header class="space-y-1 mb-4">
-      <span class="text-sm font-medium text-slate-700">one.uf gpa calculator</span>
+    <header class="flex items-start justify-between mb-4">
+      <div class="space-y-1">
+        <span class="text-sm font-medium text-slate-700">one.uf gpa calculator</span>
 
-      {#if current.gradePoints !== undefined && current.creditHours !== undefined}
-        <p class="text-xs text-slate-400">use arrow keys to try different letter grades.</p>
+        {#if current.gradePoints !== undefined && current.creditHours !== undefined && current.term !== undefined}
+          <p class="text-xs text-slate-400">use arrow keys to try different letter grades.</p>
+        {/if}
+      </div>
+      {#if current.gradePoints !== undefined && current.creditHours !== undefined && current.term !== undefined}
+        <span class="text-xs text-slate-400">{current.term}</span>
       {/if}
     </header>
 
@@ -286,20 +296,22 @@
         {/if}
       </div>
     {:else}
-      <div>
-        <p class="text-xs text-slate-400 mb-0.5">current gpa</p>
-        <p>
-          <span class="text-sm text-slate-900">
-            {round(current.gradePoints / current.creditHours)}
-          </span>
-          {#if advancedMode}
-            <span class="text-xxs text-slate-400 font-normal tracking-wider inline-flex gap-0.5">
-              <span>{round(current.gradePoints)} grade points</span>
-              <span>/</span>
-              <span>{round(current.creditHours, 0)} credit hours</span>
+      <div class="flex items-end justify-between">
+        <div>
+          <p class="text-xs text-slate-400 mb-0.5">current gpa</p>
+          <p>
+            <span class="text-sm text-slate-900">
+              {round(current.gradePoints / current.creditHours)}
             </span>
-          {/if}
-        </p>
+            {#if advancedMode}
+              <span class="text-xxs text-slate-400 font-normal tracking-wider inline-flex gap-0.5">
+                <span>{round(current.gradePoints)} grade points</span>
+                <span>/</span>
+                <span>{round(current.creditHours, 0)} credit hours</span>
+              </span>
+            {/if}
+          </p>
+        </div>
       </div>
 
       <!-- Divider -->

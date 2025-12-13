@@ -38,8 +38,10 @@ function valueForLabel(targetLabelText: string): number | undefined {
   return undefined
 }
 
-function collectPendingCourses(): PendingCourse[] {
-  const pending: PendingCourse[] = []
+function scrapePendingCoursesAndCurrentTerm(): { pendingCourses: PendingCourse[]; term: string | undefined } {
+  const pendingCourses: PendingCourse[] = []
+  let term: string | undefined
+
   // Select all course title paragraphs by their aria-label pattern
   const titleElements = document.querySelectorAll('p[aria-label^="course title -"]')
 
@@ -72,7 +74,14 @@ function collectPendingCourses(): PendingCourse[] {
     const numCredits = parseNumericText(numCreditsCell?.textContent)
     if (numCredits == undefined) continue
 
-    pending.push({
+    if (!term) {
+      const accordion = titleEl.closest('.MuiAccordion-root')
+      const termHeader = accordion?.querySelector('.MuiAccordionSummary-content h4')
+      if (termHeader) {
+        term = normalizeText(termHeader.textContent)
+      }
+    }
+    pendingCourses.push({
       code,
       title: courseTitle,
       credits: numCredits,
@@ -80,15 +89,20 @@ function collectPendingCourses(): PendingCourse[] {
     })
   }
 
-  return pending
+  return { pendingCourses, term }
 }
 
-function collectSnapshot(): DegreeSnapshot | undefined {
+function scrapeDegreeSnapshot(): DegreeSnapshot | undefined {
   const gradePoints = valueForLabel(LABEL_TEXT.gradePoints)
   const currentAndPendingCreditHours = valueForLabel(LABEL_TEXT.creditHours)
-  const pendingCourses = collectPendingCourses()
+  const { pendingCourses, term } = scrapePendingCoursesAndCurrentTerm()
 
-  if (gradePoints === undefined || currentAndPendingCreditHours === undefined || pendingCourses.length === 0) {
+  if (
+    gradePoints === undefined ||
+    currentAndPendingCreditHours === undefined ||
+    term === undefined ||
+    pendingCourses.length === 0
+  ) {
     return undefined
   }
 
@@ -98,6 +112,7 @@ function collectSnapshot(): DegreeSnapshot | undefined {
   const snapshot: DegreeSnapshot = {
     gradePoints,
     creditHours,
+    term,
     pendingCourses,
   }
 
@@ -106,6 +121,6 @@ function collectSnapshot(): DegreeSnapshot | undefined {
 
 chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
   if (message?.type === 'getSnapshot') {
-    sendResponse(collectSnapshot())
+    sendResponse(scrapeDegreeSnapshot())
   }
 })
