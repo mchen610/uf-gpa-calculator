@@ -308,7 +308,7 @@
       <section>
         <div class="flex items-end justify-between mb-2">
           <div>
-            <div class="text-xs text-slate-400 mb-0.5">projected gpa</div>
+            <div class="text-xs text-indigo-400 mb-0.5">projected gpa</div>
             <div class="text-sm text-indigo-500 flex items-baseline">
               {round(
                 (current.gradePoints + projection.addedGradePoints) /
