@@ -4,7 +4,7 @@
   "version": "0.2.0",
   "action": {
     "default_title": "one.uf gpa calculator",
-    "default_popup": "popup/index.html",
+    "default_popup": "src/popup/index.html",
     "default_icon": {
       "16": "one.png",
       "48": "one.png",
@@ -23,7 +23,7 @@
         "https://one.uf.edu/*"
       ],
       "js": [
-        "content-script/main.ts"
+        "src/content-script/main.ts"
       ],
       "run_at": "document_idle"
     }
