@@ -65,18 +65,18 @@
   let currentUrl = ''
 
   function computeProjection(): ProjectionDetails {
-    const inputs = pendingCourses.map((course) => {
-      const { grade } = course
+    const userInputs = pendingCourses.map((course) => {
+      const { credits, grade } = course
       const points = grade ? GRADE_POINTS[grade] : undefined
-      return { course, grade, points }
+      return points !== undefined ? { credits, points } : undefined
     })
 
     return {
-      addedGradePoints: sum(inputs, (i) =>
-        i.points === undefined ? 0 : i.points * i.course.credits,
+      addedGradePoints: sum(userInputs, (input) =>
+        input === undefined ? 0 : input.points * input.credits,
       ),
-      recognizedHours: sum(inputs, (i) =>
-        i.points === undefined ? 0 : i.course.credits,
+      recognizedHours: sum(userInputs, (input) =>
+        input === undefined ? 0 : input.credits,
       ),
     }
   }
@@ -202,10 +202,7 @@
   function recalculate(): void {
     projection = computeProjection()
 
-    if (
-      current.gradePoints == undefined ||
-      current.hoursCarried == undefined
-    ) {
+    if (current.gradePoints == undefined || current.hoursCarried == undefined) {
       gpaDiff = 0
       return
     }
