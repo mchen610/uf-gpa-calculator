@@ -222,7 +222,6 @@
 
 <main class={cn('min-w-96', 'font-sans bg-white text-slate-800', 'selection:bg-indigo-50 selection:text-indigo-900')}>
   <div class="mx-auto w-full max-w-md flex-col p-6 pb-3 space-y-2">
-    <!-- Header -->
     <header class="flex items-start justify-between mb-4">
       <div class="space-y-1">
         <span class="text-sm font-medium text-slate-700">one.uf gpa calculator</span>
@@ -236,7 +235,6 @@
       {/if}
     </header>
 
-    <!-- Stats Row -->
     {#if current === undefined}
       <div class="flex flex-col items-center justify-center py-12 text-center">
         {#if currentUrl.includes('one.uf.edu/transcript')}
@@ -276,14 +274,12 @@
         </div>
       </div>
 
-      <!-- Divider -->
       <div class="w-full h-px relative overflow-hidden">
         <div
           class="absolute inset-0 h-full w-full bg-gradient-to-r from-slate-200 via-slate-200 to-white to-100% via-90%"
         ></div>
       </div>
 
-      <!-- Pending Classes Section -->
       <section>
         <div class="flex items-end justify-between mb-2">
           <div>
