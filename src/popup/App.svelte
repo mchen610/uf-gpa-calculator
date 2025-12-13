@@ -256,7 +256,7 @@
   <div class="mx-auto flex w-full max-w-md flex-col p-6 pb-3 space-y-3">
     <!-- Header -->
     <header class="space-y-1">
-      <h1 class="text-sm font-medium text-slate-700">one.uf gpa calculator</h1>
+      <span class="text-sm font-medium text-slate-700">one.uf gpa calculator</span>
 
       {#if current.gradePoints !== undefined && current.creditHours !== undefined}
         <p class="text-xs text-slate-400">use arrow keys to navigate between grades and courses.</p>
