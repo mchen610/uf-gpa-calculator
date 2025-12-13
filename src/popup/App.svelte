@@ -260,7 +260,7 @@
             'absolute inset-0 h-full w-full',
             'bg-gradient-to-r from-slate-200 via-slate-200 to-white to-100% via-90%',
           )}
-        />
+        ></div>
       </div>
 
       <section>
