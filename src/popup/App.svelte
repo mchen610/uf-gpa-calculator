@@ -20,19 +20,15 @@
   let advancedMode = false
   let showOptions = false
 
-  let closeTimeout: ReturnType<typeof setTimeout>
   let pollingInterval: ReturnType<typeof setInterval>
   let hasLoaded = false
 
   function handleOpen() {
-    clearTimeout(closeTimeout)
     showOptions = true
   }
 
   function handleClose() {
-    closeTimeout = setTimeout(() => {
-      showOptions = false
-    }, 150)
+    showOptions = false
   }
 
   let projection: ProjectionDetails = {
@@ -344,44 +340,45 @@
               </button>
 
               {#if showOptions}
-                <div
-                  class={cn(
-                    'absolute right-0 top-full z-10 mt-1',
-                    'flex flex-col gap-2 min-w-32 p-2',
-                    'bg-white shadow-lg border border-slate-100 rounded-md',
-                  )}
-                >
-                  <label
-                    class="flex items-center gap-2 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer"
+                <div class="absolute right-0 top-full z-10 pt-0.5">
+                  <div
+                    class={cn(
+                      'flex flex-col gap-2 min-w-32 p-2',
+                      'bg-white shadow-lg border border-slate-100 rounded-md',
+                    )}
                   >
-                    <input
-                      type="checkbox"
-                      bind:checked={skipPlusOrMinusGrades}
-                      class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-3 w-3 cursor-pointer"
-                    />
-                    skip +/- grades
-                  </label>
-                  <label
-                    class="flex items-center gap-2 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer"
-                  >
-                    <input
-                      type="checkbox"
-                      bind:checked={doAllAtOnce}
-                      on:change={handleBatchFillChange}
-                      class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-3 w-3 cursor-pointer"
-                    />
-                    do all at once
-                  </label>
-                  <label
-                    class="flex items-center gap-2 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer"
-                  >
-                    <input
-                      type="checkbox"
-                      bind:checked={advancedMode}
-                      class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-3 w-3 cursor-pointer"
-                    />
-                    advanced mode
-                  </label>
+                    <label
+                      class="flex items-center gap-2 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        bind:checked={skipPlusOrMinusGrades}
+                        class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-3 w-3 cursor-pointer"
+                      />
+                      skip +/- grades
+                    </label>
+                    <label
+                      class="flex items-center gap-2 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        bind:checked={doAllAtOnce}
+                        on:change={handleBatchFillChange}
+                        class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-3 w-3 cursor-pointer"
+                      />
+                      do all at once
+                    </label>
+                    <label
+                      class="flex items-center gap-2 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        bind:checked={advancedMode}
+                        class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-3 w-3 cursor-pointer"
+                      />
+                      advanced mode
+                    </label>
+                  </div>
                 </div>
               {/if}
             </div>
