@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "$lib/*": ["src/lib/*"]
+      "$shared/*": ["src/shared/*"]
     },
     "types": ["chrome", "node"],
     "allowSyntheticDefaultImports": true,

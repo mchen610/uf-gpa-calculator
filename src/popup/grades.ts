@@ -1,20 +1,20 @@
-import { typedKeys } from '$lib/typeUtils'
-import { sum } from '$lib/utils'
-import type { PendingCourse, ProjectionDetails } from '$lib/types'
+import { typedKeys } from '$shared/typeUtils'
+import { sum } from '$shared/utils'
+import type { PendingCourse, ProjectionDetails } from '$shared/types'
 
 export const GRADE_POINTS = {
-  'A': 4.0,
+  A: 4.0,
   'A-': 3.67,
   'B+': 3.33,
-  'B': 3.0,
+  B: 3.0,
   'B-': 2.67,
   'C+': 2.33,
-  'C': 2.0,
+  C: 2.0,
   'C-': 1.67,
   'D+': 1.33,
-  'D': 1.0,
+  D: 1.0,
   'D-': 0.67,
-  'E': 0.0,
+  E: 0.0,
 } as const
 
 export type Grade = keyof typeof GRADE_POINTS
@@ -41,4 +41,3 @@ export function computeProjection(courses: PendingCourse[]): ProjectionDetails {
     addedCreditHours: sum(userInputs, (input) => (input === undefined ? 0 : input.credits)),
   }
 }
-

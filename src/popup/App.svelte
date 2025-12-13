@@ -1,11 +1,11 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte'
-  import type { DegreeSnapshot, PendingCourse, ProjectionDetails } from '$lib/types'
+  import type { DegreeSnapshot, PendingCourse, ProjectionDetails } from '$shared/types'
   import { GRADE_POINTS, normalizeGradeInput, computeProjection } from './grades'
   import { getDegreeSnapshot } from './api'
-  import { round } from '$lib/utils'
+  import { round } from '$shared/utils'
   import { cn } from './utils'
-  import { typedKeys } from '$lib/typeUtils'
+  import { typedKeys } from '$shared/typeUtils'
   import { X, Settings2 } from 'lucide-svelte'
 
   const POLLING_INTERVAL = 100

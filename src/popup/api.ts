@@ -1,4 +1,4 @@
-import type { DegreeSnapshot } from '$lib/types'
+import type { DegreeSnapshot } from '$shared/types'
 
 export async function getDegreeSnapshot(): Promise<{ snapshot?: DegreeSnapshot; url?: string }> {
   const [{ id, url }] = await chrome.tabs.query({

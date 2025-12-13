@@ -26,7 +26,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      $lib: path.resolve(rootDir, 'lib'),
+      $shared: path.resolve(rootDir, 'shared'),
     },
   },
 })

@@ -1,4 +1,4 @@
-import type { DegreeSnapshot, PendingCourse } from '$lib/types'
+import type { DegreeSnapshot, PendingCourse } from '$shared/types'
 
 const LABEL_TEXT = {
   gradePoints: 'UF Cumulative Grade Points',
