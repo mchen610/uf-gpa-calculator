@@ -10,8 +10,8 @@
   import { typedKeys } from '$lib/typeUtils'
 
   const POLLING_INTERVAL = 100
-  const ALL_GRADES = ['', ...typedKeys(GRADE_POINTS)]
-  const WHOLE_GRADES = ALL_GRADES.filter((g) => g.length <= 1)
+  const ALL_POSSIBLE_GRADES = ['', ...typedKeys(GRADE_POINTS)]
+  const GRADES_WITHOUT_PLUSES_OR_MINUSES = ALL_POSSIBLE_GRADES.filter((g) => g.length <= 1)
 
   let current: DegreeSnapshot = {
     gradePoints: undefined,
@@ -108,7 +108,7 @@
 
   function handleHorizontalNavigation(event: KeyboardEvent, courseId: string) {
     event.preventDefault()
-    const grades = skipPlusOrMinusGrades ? WHOLE_GRADES : ALL_GRADES
+    const grades = skipPlusOrMinusGrades ? GRADES_WITHOUT_PLUSES_OR_MINUSES : ALL_POSSIBLE_GRADES
     const idx = grades.indexOf(rawUserInputs[courseId] ?? '')
 
     let nextGrade: string | undefined
