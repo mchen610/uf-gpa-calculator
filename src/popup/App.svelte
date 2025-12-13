@@ -57,11 +57,12 @@
     addedCreditHours: 0,
   }
 
-  let gpaDiff: number = 0
+  $: projection = computeProjection(pendingCourses)
+
   let currentUrl = ''
 
-  function computeProjection(): ProjectionDetails {
-    const userInputs = pendingCourses.map((course) => {
+  function computeProjection(courses: PendingCourse[]): ProjectionDetails {
+    const userInputs = courses.map((course) => {
       const { credits, grade } = course
       const points = grade ? GRADE_POINTS[grade] : undefined
       return points !== undefined ? { credits, points } : undefined
@@ -178,20 +179,6 @@
     }
   }
 
-  function recalculate(): void {
-    projection = computeProjection()
-
-    if (current.gradePoints == undefined || current.creditHours == undefined) {
-      gpaDiff = 0
-      return
-    }
-
-    const totalGradePoints = current.gradePoints + projection.addedGradePoints
-    const totalHours = current.creditHours + projection.addedCreditHours
-    const projectedGpa = totalHours > 0 ? totalGradePoints / totalHours : 0
-    gpaDiff = projectedGpa - current.gradePoints / current.creditHours
-  }
-
   function handleBatchFillChange() {
     if (doAllAtOnce) {
       focusFirstInput()
@@ -216,14 +203,11 @@
       }
       pendingCourses = pendingCourses.map((c) => (c.id === courseId ? { ...c, grade: normalized } : c))
     }
-
-    recalculate()
   }
 
   function clearAllInputs(): void {
     rawUserInputs = {}
     pendingCourses = pendingCourses.map((c) => ({ ...c, grade: undefined }))
-    recalculate()
   }
 
   async function fetchSnapshot(): Promise<void> {
@@ -254,7 +238,6 @@
     rawUserInputs = {}
     current = data
     pendingCourses = data.pendingCourses
-    recalculate()
 
     await tick()
     focusFirstInput()
@@ -314,23 +297,6 @@
             </span>
           </div>
         </div>
-        <div>
-          <div class="text-xs text-slate-400 mb-0.5">projected gpa</div>
-          <div class="text-sm text-indigo-500 flex items-baseline">
-            {round(
-              (current.gradePoints + projection.addedGradePoints) / (current.creditHours + projection.addedCreditHours),
-            )}
-            <span class="text-xxs text-indigo-300 font-normal ml-1 tracking-wider inline-flex gap-0.5">
-              <span>
-                {round(current.gradePoints + projection.addedGradePoints, 2)}
-              </span>
-              <span>/</span>
-              <span>
-                {round(current.creditHours + projection.addedCreditHours, 0)}
-              </span>
-            </span>
-          </div>
-        </div>
       </div>
 
       <!-- Divider -->
@@ -343,18 +309,22 @@
       <!-- Pending Classes Section -->
       <section>
         <div class="flex items-end justify-between mb-2">
-          <div class="flex flex-col gap-0.5">
-            <div class="text-xs text-slate-400">gpa diff</div>
-            <div
-              class={cn(
-                'flex items-center gap-1 text-xs',
-                gpaDiff > 0 && 'text-blue-600',
-                gpaDiff < 0 && 'text-rose-600',
-                gpaDiff === 0 && 'text-slate-500',
+          <div>
+            <div class="text-xs text-slate-400 mb-0.5">projected gpa</div>
+            <div class="text-sm text-indigo-500 flex items-baseline">
+              {round(
+                (current.gradePoints + projection.addedGradePoints) /
+                  (current.creditHours + projection.addedCreditHours),
               )}
-            >
-              <span>{Math.abs(gpaDiff).toFixed(3)}</span>
-              <span>{gpaDiff > 0 ? '↑' : gpaDiff < 0 ? '↓' : ''}</span>
+              <span class="text-xxs text-indigo-300 font-normal ml-1 tracking-wider inline-flex gap-0.5">
+                <span>
+                  {round(current.gradePoints + projection.addedGradePoints, 2)}
+                </span>
+                <span>/</span>
+                <span>
+                  {round(current.creditHours + projection.addedCreditHours, 0)}
+                </span>
+              </span>
             </div>
           </div>
 
@@ -375,7 +345,10 @@
               on:focusin={handleOpen}
               on:focusout={handleClose}
             >
-              <button tabindex="-1" class="text-xs text-slate-600 hover:text-black transition-colors tracking-wide flex items-center gap-1">
+              <button
+                tabindex="-1"
+                class="text-xs text-slate-600 hover:text-black transition-colors tracking-wide flex items-center gap-1"
+              >
                 options
                 <Settings2 size={12} strokeWidth={2} />
               </button>
