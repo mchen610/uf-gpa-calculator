@@ -286,15 +286,17 @@
       </div>
     {:else}
       <div>
-        <div class="text-xs text-slate-400 mb-0.5">current gpa</div>
-        <div class="text-sm text-slate-900 flex items-baseline">
-          {round(current.gradePoints / current.creditHours)}
-          <span class="text-xxs text-slate-400 font-normal ml-1 tracking-wider inline-flex gap-0.5">
+        <p class="text-xs text-slate-400 mb-0.5">current gpa</p>
+        <p>
+          <span class="text-sm text-slate-900">
+            {round(current.gradePoints / current.creditHours)}
+          </span>
+          <span class="text-xxs text-slate-400 font-normal tracking-wider inline-flex gap-0.5">
             <span>{round(current.gradePoints)} grade points</span>
             <span>/</span>
             <span>{round(current.creditHours, 0)} credit hours</span>
           </span>
-        </div>
+        </p>
       </div>
 
       <!-- Divider -->
@@ -308,13 +310,15 @@
       <section>
         <div class="flex items-end justify-between mb-2">
           <div>
-            <div class="text-xs text-indigo-400 mb-0.5">projected gpa</div>
-            <div class="text-sm text-indigo-500 flex items-baseline">
-              {round(
-                (current.gradePoints + projection.addedGradePoints) /
-                  (current.creditHours + projection.addedCreditHours),
-              )}
-              <span class="text-xxs text-indigo-300 font-normal ml-1 tracking-wider inline-flex gap-0.5">
+            <p class="text-xs text-indigo-400 mb-0.5">projected gpa</p>
+            <p>
+              <span class="text-sm text-indigo-500">
+                {round(
+                  (current.gradePoints + projection.addedGradePoints) /
+                    (current.creditHours + projection.addedCreditHours),
+                )}
+              </span>
+              <span class="text-xxs text-indigo-300 font-normal tracking-wider inline-flex gap-0.5">
                 <span>
                   {round(current.gradePoints + projection.addedGradePoints, 2)} grade points
                 </span>
@@ -323,7 +327,7 @@
                   {round(current.creditHours + projection.addedCreditHours, 0)} credit hours
                 </span>
               </span>
-            </div>
+            </p>
           </div>
 
           <div class="flex flex-col items-end gap-0.5">
