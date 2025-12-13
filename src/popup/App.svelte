@@ -10,10 +10,9 @@
   const ALL_POSSIBLE_GRADES = ['', ...typedKeys(GRADE_POINTS)]
   const GRADES_WITHOUT_PLUSES_OR_MINUSES = ALL_POSSIBLE_GRADES.filter((g) => g.length <= 1)
 
-  let current: DegreeSnapshot = {
+  let current: Omit<DegreeSnapshot, 'pendingCourses'> = {
     gradePoints: undefined,
     creditHours: undefined,
-    pendingCourses: [],
   }
   let pendingCourses: PendingCourse[] = []
 
@@ -235,8 +234,9 @@
   }
 
   async function applySnapshot(data: DegreeSnapshot): Promise<void> {
+    const { gradePoints, creditHours } = data
     rawUserInputs = {}
-    current = data
+    current = { gradePoints, creditHours }
     pendingCourses = data.pendingCourses
 
     await tick()
@@ -259,7 +259,7 @@
       <h1 class="text-sm font-medium text-slate-700">one.uf gpa calculator</h1>
 
       {#if current.gradePoints !== undefined && current.creditHours !== undefined}
-        <p class="text-xs text-slate-400">use arrow keys to navigate between grades and courses</p>
+        <p class="text-xs text-slate-400">use arrow keys to navigate between grades and courses!</p>
       {/if}
     </header>
 
