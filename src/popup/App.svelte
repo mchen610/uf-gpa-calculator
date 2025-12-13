@@ -253,9 +253,9 @@
 <svelte:window on:keydown={handleKeydown} on:click={handleClickOutside} />
 
 <main class={cn('min-w-96', 'font-sans bg-white text-slate-800', 'selection:bg-indigo-50 selection:text-indigo-900')}>
-  <div class="mx-auto flex w-full max-w-md flex-col p-6 pb-3 space-y-3">
+  <div class="mx-auto w-full max-w-md flex-col p-6 pb-3 space-y-2">
     <!-- Header -->
-    <header class="space-y-1">
+    <header class="space-y-1 mb-4">
       <span class="text-sm font-medium text-slate-700">one.uf gpa calculator</span>
 
       {#if current.gradePoints !== undefined && current.creditHours !== undefined}
