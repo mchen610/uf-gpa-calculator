@@ -202,16 +202,15 @@
 
 <main class={cn('min-w-96', 'font-sans bg-white text-slate-800', 'selection:bg-indigo-50 selection:text-indigo-900')}>
   <div class="mx-auto w-full max-w-md flex-col p-6 pb-3 space-y-2">
-    <header class="flex items-start justify-between mb-4">
-      <div class="space-y-1">
+    <header class="flex flex-col gap-1 mb-4">
+      <div class="flex items-center justify-between">
         <span class="text-sm font-medium text-slate-700">one.uf gpa calculator</span>
-
         {#if current !== undefined}
-          <p class="text-xs text-slate-400">use arrow keys to try different letter grades.</p>
+          <span class="text-xs text-slate-400">{current.term}</span>
         {/if}
       </div>
       {#if current !== undefined}
-        <span class="text-xs text-slate-400">{current.term}</span>
+        <p class="text-xs text-slate-400">type a grade (A, B+, C...) or use arrow keys to navigate.</p>
       {/if}
     </header>
 
