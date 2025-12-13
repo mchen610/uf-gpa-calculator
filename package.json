@@ -4,8 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite build --watch --mode development",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "vite build && zip -r extension.zip dist/",
+    "preview": "vite preview",
+    "lint": "prettier --check --write ."
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.0.1",

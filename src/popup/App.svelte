@@ -491,7 +491,8 @@
                   value={rawUserInputs[course.id] ?? ''}
                   on:input={(event) =>
                     setGradeInput(course.id, event.currentTarget.value)}
-                  on:keydown={(event) => handleInputKeydown(event, index, course.id)}
+                  on:keydown={(event) =>
+                    handleInputKeydown(event, index, course.id)}
                   maxlength="2"
                   placeholder={'-'}
                 />
