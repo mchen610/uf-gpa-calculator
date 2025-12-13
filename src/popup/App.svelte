@@ -285,7 +285,6 @@
         {/if}
       </div>
     {:else}
-      <div class="grid grid-cols-2 gap-4">
         <div>
           <div class="text-xs text-slate-400 mb-0.5">current gpa</div>
           <div class="text-sm text-slate-900 flex items-baseline">
@@ -295,7 +294,6 @@
               <span>/</span>
               <span>{round(current.creditHours, 0)}</span>
             </span>
-          </div>
         </div>
       </div>
 
