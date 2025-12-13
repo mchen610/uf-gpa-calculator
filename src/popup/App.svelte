@@ -410,7 +410,7 @@
             <button
               on:click={clearAllInputs}
               tabindex="-1"
-              class="text-xs text-slate-600 hover:text-black transition-colors tracking-wide"
+              class="text-xs text-slate-400 hover:text-slate-600 transition-colors tracking-wide"
             >
               clear all
             </button>
@@ -424,7 +424,7 @@
             >
               <button
                 tabindex="-1"
-                class="text-xs text-slate-400 hover:text-slate-600 transition-colors tracking-wide flex gap-1"
+                class="text-xs text-slate-600 hover:text-black transition-colors tracking-wide flex gap-1"
               >
                 options
               </button>
