@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte'
   import type { DegreeSnapshot, PendingCourse, ProjectionDetails } from '$shared/types'
-  import { GRADE_POINTS, normalizeGradeInput, computeProjection } from './lib/grades'
+  import { GRADE_POINTS, normalizeGradeInput, computeProjection, isValidGrade } from './lib/grades'
   import { getDegreeSnapshot } from './lib/api'
   import { round } from '$shared/utils'
   import { cn } from './lib/utils'
@@ -35,6 +35,14 @@
 
   function getInputElementId(index: number): string {
     return `grade-input-${index}`
+  }
+
+  type InputState = 'empty' | 'valid' | 'invalid'
+
+  function getInputState(courseId: string): InputState {
+    const raw = rawUserInputs[courseId]
+    if (!raw) return 'empty'
+    return isValidGrade(raw) ? 'valid' : 'invalid'
   }
 
   function focusInput(index: number) {
@@ -359,26 +367,38 @@
         {#if pendingCourses.length === 0}
           <div class="py-6 text-center text-xs text-slate-400">Sync with your UF grade summary to see classes.</div>
         {:else}
-          <ul class="flex flex-col gap-1 group">
+          <ul class="flex flex-col gap-0.5 group">
             {#each pendingCourses as course, index}
-              <li class="flex items-center gap-3 py-2">
-                <input
-                  id={getInputElementId(index)}
+              {@const inputState = getInputState(course.code)}
+              <li class="flex items-center gap-3 py-1.5">
+                <div
                   class={cn(
-                    'w-6 border-b pb-0.5',
-                    'text-center text-sm',
-                    'bg-transparent text-slate-600 placeholder:text-slate-300',
-                    'outline-none transition-colors focus:placeholder:text-transparent focus:border-indigo-600',
-                    'border-slate-300',
-                    doAllAtOnce && 'group-focus-within:border-indigo-600',
+                    'relative flex items-center justify-center',
+                    'w-8 h-7 rounded-md',
+                    'transition-all duration-150',
+                    inputState === 'empty' && 'border border-slate-300',
+                    inputState === 'valid' && 'border border-indigo-200 bg-indigo-50',
+                    inputState === 'invalid' && 'border border-slate-300',
+                    doAllAtOnce && 'group-focus-within:border-indigo-300',
                   )}
-                  type="text"
-                  value={rawUserInputs[course.code] ?? ''}
-                  on:input={(event) => setGradeInput(course.code, event.currentTarget.value)}
-                  on:keydown={(event) => handleInputKeydown(event, index, course.code)}
-                  maxlength="2"
-                  placeholder={'-'}
-                />
+                >
+                  <input
+                    id={getInputElementId(index)}
+                    class={cn(
+                      'w-full h-full rounded-md',
+                      'text-center text-sm',
+                      'bg-transparent outline-none',
+                      inputState === 'valid' && 'text-indigo-600 font-medium',
+                      inputState === 'invalid' && 'text-slate-400 font-normal',
+                      'focus:ring-2 focus:ring-indigo-500/20 focus:ring-offset-0',
+                    )}
+                    type="text"
+                    value={rawUserInputs[course.code] ?? ''}
+                    on:input={(event) => setGradeInput(course.code, event.currentTarget.value)}
+                    on:keydown={(event) => handleInputKeydown(event, index, course.code)}
+                    maxlength="2"
+                  />
+                </div>
                 <div class="flex flex-col">
                   <p>
                     <span class="text-xs text-slate-700">{course.title}</span>
