@@ -3,6 +3,7 @@
   import type { DegreeSnapshot, PendingCourse, ProjectionDetails } from '$shared/types'
   import { GRADE_POINTS, normalizeGradeInput, computeProjection, isValidGrade } from './lib/grades'
   import { getDegreeSnapshot } from './lib/api'
+  import { loadSavedGrades, saveValidGrades } from './lib/storage'
   import { round } from '$shared/utils'
   import { cn } from './lib/utils'
   import { typedKeys } from '$shared/typeUtils'
@@ -170,11 +171,14 @@
       }
       pendingCourses = pendingCourses.map((c) => (c.code === courseId ? { ...c, grade: normalized } : c))
     }
+
+    saveValidGrades(rawUserInputs)
   }
 
   function clearAllInputs(): void {
     rawUserInputs = {}
     pendingCourses = pendingCourses.map((c) => ({ ...c, grade: undefined }))
+    saveValidGrades(rawUserInputs)
   }
 
   async function fetchSnapshot(): Promise<void> {
@@ -191,10 +195,11 @@
 
   async function applySnapshot(data: DegreeSnapshot): Promise<void> {
     const { gradePoints, creditHours, term } = data
-    rawUserInputs = {}
     current = { gradePoints, creditHours, term }
-    pendingCourses = data.pendingCourses
 
+    const savedGrades = await loadSavedGrades()
+    pendingCourses = data.pendingCourses.map((course) => ({ ...course, grade: savedGrades[course.code] }))
+    rawUserInputs = savedGrades
     await tick()
     focusFirstInput()
   }
