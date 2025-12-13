@@ -285,15 +285,15 @@
         {/if}
       </div>
     {:else}
-        <div>
-          <div class="text-xs text-slate-400 mb-0.5">current gpa</div>
-          <div class="text-sm text-slate-900 flex items-baseline">
-            {round(current.gradePoints / current.creditHours)}
-            <span class="text-xxs text-slate-400 font-normal ml-1 tracking-wider inline-flex gap-0.5">
-              <span>{round(current.gradePoints)}</span>
-              <span>/</span>
-              <span>{round(current.creditHours, 0)}</span>
-            </span>
+      <div>
+        <div class="text-xs text-slate-400 mb-0.5">current gpa</div>
+        <div class="text-sm text-slate-900 flex items-baseline">
+          {round(current.gradePoints / current.creditHours)}
+          <span class="text-xxs text-slate-400 font-normal ml-1 tracking-wider inline-flex gap-0.5">
+            <span>{round(current.gradePoints)} grade points</span>
+            <span>/</span>
+            <span>{round(current.creditHours, 0)} credit hours</span>
+          </span>
         </div>
       </div>
 
@@ -316,11 +316,11 @@
               )}
               <span class="text-xxs text-indigo-300 font-normal ml-1 tracking-wider inline-flex gap-0.5">
                 <span>
-                  {round(current.gradePoints + projection.addedGradePoints, 2)}
+                  {round(current.gradePoints + projection.addedGradePoints, 2)} grade points
                 </span>
                 <span>/</span>
                 <span>
-                  {round(current.creditHours + projection.addedCreditHours, 0)}
+                  {round(current.creditHours + projection.addedCreditHours, 0)} credit hours
                 </span>
               </span>
             </div>
