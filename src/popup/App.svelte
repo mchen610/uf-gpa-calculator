@@ -410,7 +410,7 @@
                   on:input={(event) => setGradeInput(course.code, event.currentTarget.value)}
                   on:keydown={(event) => handleInputKeydown(event, index, course.code)}
                   maxlength="2"
-                  placeholder={'?'}
+                  placeholder={'-'}
                 />
                 <div class="flex flex-col">
                   <p>
