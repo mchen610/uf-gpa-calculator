@@ -9,7 +9,6 @@
   import { typedKeys } from '$shared/typeUtils'
   import { X, Settings2 } from 'lucide-svelte'
 
-  const POLLING_INTERVAL = 100
   const ALL_POSSIBLE_GRADES = ['', ...typedKeys(GRADE_POINTS)]
   const GRADES_WITHOUT_PLUSES_OR_MINUSES = ALL_POSSIBLE_GRADES.filter((g) => g.length <= 1)
 
@@ -23,7 +22,7 @@
   let advancedMode = false
   let showOptions = false
 
-  let pollingInterval: ReturnType<typeof setInterval>
+  let isLoading = true
 
   let projection: ProjectionDetails = {
     addedGradePoints: 0,
@@ -31,8 +30,6 @@
   }
 
   $: projection = computeProjection(pendingCourses)
-
-  let currentUrl = ''
 
   function getInputElementId(index: number): string {
     return `grade-input-${index}`
@@ -188,15 +185,13 @@
   }
 
   async function fetchSnapshot(): Promise<void> {
-    const { snapshot, url } = await getDegreeSnapshot()
-    if (url) {
-      currentUrl = url
-    }
+    const { snapshot } = await getDegreeSnapshot()
 
     if (snapshot) {
-      applySnapshot(snapshot)
-      clearInterval(pollingInterval)
+      await applySnapshot(snapshot)
     }
+
+    isLoading = false
   }
 
   async function applySnapshot(data: DegreeSnapshot): Promise<void> {
@@ -219,8 +214,6 @@
 
   onMount(() => {
     fetchSnapshot()
-    pollingInterval = setInterval(fetchSnapshot, POLLING_INTERVAL)
-    return () => clearInterval(pollingInterval)
   })
 </script>
 
@@ -240,25 +233,24 @@
       {/if}
     </header>
 
-    {#if current === undefined}
+    {#if isLoading}
       <div class="flex flex-col items-center justify-center py-12 text-center">
-        {#if currentUrl.includes('one.uf.edu/transcript')}
-          <div class="flex flex-col items-center gap-3">
-            <div class="h-5 w-5 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-600"></div>
-            <p class="text-xs text-slate-500">Waiting for transcript to load...</p>
-          </div>
-        {:else}
-          <div class="flex items-center gap-1">
-            <p class="text-xs text-slate-500">navigate to</p>
-            <a
-              href="https://one.uf.edu/transcript"
-              target="_blank"
-              class="text-xs font-medium text-slate-500 underline decoration-slate-400 hover:text-slate-700"
-              >one.uf.edu/transcript</a
-            >
-            <p class="text-xs text-slate-500">to use.</p>
-          </div>
-        {/if}
+        <div class="flex flex-col items-center gap-3">
+          <div class="h-5 w-5 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-600"></div>
+          <p class="text-xs text-slate-500">Loading...</p>
+        </div>
+      </div>
+    {:else if current === undefined}
+      <div class="flex flex-col items-center justify-center py-12 text-center">
+        <div class="flex items-center gap-1">
+          <p class="text-xs text-slate-500">navigate to</p>
+          <a
+            href="https://one.uf.edu"
+            target="_blank"
+            class="text-xs font-medium text-slate-500 underline decoration-slate-400 hover:text-slate-700">one.uf.edu</a
+          >
+          <p class="text-xs text-slate-500">to use.</p>
+        </div>
       </div>
     {:else}
       <div class="flex items-end justify-between">

@@ -18,3 +18,80 @@ export interface ProjectionDetails {
   addedGradePoints: number
   addedCreditHours: number
 }
+
+
+// =========================
+// Transcript UF API types
+// =========================
+
+export interface TranscriptCourse {
+  subject: string
+  catalogNumber: string
+  classNumber: string
+  courseHeader: string
+  title: string
+  grade: string
+  credits: string
+  hoursEarned: string
+  hoursCarried: number
+  reqDesignation: string
+  reqDesignationGrade: string
+  repeatDate: string
+  repeatCodeDescr: string
+  printRepeat: string
+}
+
+export interface TranscriptSession {
+  sessionDescription: string
+  courses: TranscriptCourse[]
+}
+
+export interface TranscriptCreditSource {
+  sourceType: string
+  sourceDescription: string
+  sessions: TranscriptSession[]
+  currentGpa?: string
+  totalHoursCarried?: string
+  totalHoursEarned?: string
+  totalGradePointsEarned?: string
+  totalCredits?: string
+}
+
+export interface TranscriptTerm {
+  termCode: number
+  termDescription: string
+  college: string
+  level: string
+  withdrawalCode: string
+  withdrawalDate: string
+  withdrawalReason: string
+  creditSources: TranscriptCreditSource[]
+}
+
+export interface TranscriptRecords {
+  undergraduate?: {
+    ufGpa: string
+    totalHoursEarned: string
+    gradePointsEarned: string
+    ufHoursEarned: string
+    ufHoursCarried: string
+    transferHoursEarned: string
+    terms: TranscriptTerm[]
+  }
+}
+
+export interface TranscriptPersonalInfo {
+  name: string
+  ufid: number
+  residency: string
+  residencyDescription: string
+  basisOfAdmissionCode: string
+  basisOfAdmissionDescription: string
+  ssn: string
+  dob: string
+}
+
+export interface UnofficialTranscriptResponse {
+  personalInfo: TranscriptPersonalInfo
+  records: TranscriptRecords
+}
