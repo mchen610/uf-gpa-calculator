@@ -20,6 +20,7 @@
 
   let skipPlusOrMinusGrades = false
   let doAllAtOnce = false
+  let advancedMode = false
   let showOptions = false
 
   let anyInputFocused = false
@@ -291,11 +292,13 @@
           <span class="text-sm text-slate-900">
             {round(current.gradePoints / current.creditHours)}
           </span>
-          <span class="text-xxs text-slate-400 font-normal tracking-wider inline-flex gap-0.5">
-            <span>{round(current.gradePoints)} grade points</span>
-            <span>/</span>
-            <span>{round(current.creditHours, 0)} credit hours</span>
-          </span>
+          {#if advancedMode}
+            <span class="text-xxs text-slate-400 font-normal tracking-wider inline-flex gap-0.5">
+              <span>{round(current.gradePoints)} grade points</span>
+              <span>/</span>
+              <span>{round(current.creditHours, 0)} credit hours</span>
+            </span>
+          {/if}
         </p>
       </div>
 
@@ -318,15 +321,17 @@
                     (current.creditHours + projection.addedCreditHours),
                 )}
               </span>
-              <span class="text-xxs text-indigo-300 font-normal tracking-wider inline-flex gap-0.5">
-                <span>
-                  {round(current.gradePoints + projection.addedGradePoints, 2)} grade points
+              {#if advancedMode}
+                <span class="text-xxs text-indigo-300 font-normal tracking-wider inline-flex gap-0.5">
+                  <span>
+                    {round(current.gradePoints + projection.addedGradePoints, 2)} grade points
+                  </span>
+                  <span>/</span>
+                  <span>
+                    {round(current.creditHours + projection.addedCreditHours, 0)} credit hours
+                  </span>
                 </span>
-                <span>/</span>
-                <span>
-                  {round(current.creditHours + projection.addedCreditHours, 0)} credit hours
-                </span>
-              </span>
+              {/if}
             </p>
           </div>
 
@@ -384,6 +389,16 @@
                     />
                     do all at once
                   </label>
+                  <label
+                    class="flex items-center gap-2 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer"
+                  >
+                    <input
+                      type="checkbox"
+                      bind:checked={advancedMode}
+                      class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-3 w-3 cursor-pointer"
+                    />
+                    advanced mode
+                  </label>
                 </div>
               {/if}
             </div>
@@ -415,7 +430,9 @@
                 <div class="flex flex-col">
                   <p>
                     <span class="text-xs text-slate-700">{course.title}</span>
-                    <span class="text-xxs text-slate-400">{course.code}</span>
+                    {#if advancedMode}
+                      <span class="text-xxs text-slate-400">{course.code}</span>
+                    {/if}
                   </p>
                   <p class="text-xs text-indigo-400">{course.credits} credits</p>
                 </div>
