@@ -21,7 +21,6 @@
   let showOptions = false
 
   let pollingInterval: ReturnType<typeof setInterval>
-  let hasLoaded = false
 
   function handleOpen() {
     showOptions = true
@@ -190,8 +189,6 @@
   }
 
   async function fetchSnapshot(): Promise<void> {
-    if (hasLoaded) return
-
     const [tab] = await chrome.tabs.query({
       active: true,
       currentWindow: true,
@@ -207,7 +204,6 @@
       })
       if (data) {
         applySnapshot(data)
-        hasLoaded = true
         clearInterval(pollingInterval)
       }
     } catch {}
