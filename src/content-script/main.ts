@@ -17,9 +17,7 @@ function parseNumericText(value: string | undefined): number | undefined {
   return isFinite(Number(text)) ? Number(text) : undefined
 }
 
-function resolveValueElement(
-  element: HTMLLabelElement,
-): HTMLElement | undefined {
+function resolveValueElement(element: HTMLLabelElement): HTMLElement | undefined {
   const forId = element.getAttribute('for')
   if (!forId) return undefined
   const target = document.getElementById(forId) ?? undefined
@@ -43,9 +41,7 @@ function valueForLabel(targetLabelText: string): number | undefined {
 function collectPendingCourses(): PendingCourse[] {
   const pending: PendingCourse[] = []
   // Select all course title paragraphs by their aria-label pattern
-  const titleElements = document.querySelectorAll(
-    'p[aria-label^="course title -"]',
-  )
+  const titleElements = document.querySelectorAll('p[aria-label^="course title -"]')
 
   /**
    * For some reason, the one.uf transcript page has invisible duplicates of every course,
@@ -61,11 +57,9 @@ function collectPendingCourses(): PendingCourse[] {
     const courseTitleCell = titleEl.closest('[class*="MuiGrid-item"]')
     if (!courseTitleCell) continue
 
-    const id = normalizeText(
-      courseTitleCell.previousElementSibling?.textContent,
-    )
-    if (seenCourseIds.has(id)) continue
-    seenCourseIds.add(id)
+    const code = normalizeText(courseTitleCell.previousElementSibling?.textContent).split(' ')[0]
+    if (seenCourseIds.has(code)) continue
+    seenCourseIds.add(code)
 
     const gradeCell = courseTitleCell.nextElementSibling
     const attemptedCell = gradeCell?.nextElementSibling
@@ -79,7 +73,7 @@ function collectPendingCourses(): PendingCourse[] {
     if (numCredits == undefined) continue
 
     pending.push({
-      id,
+      code,
       title: courseTitle,
       credits: numCredits,
       grade: undefined,
@@ -94,11 +88,7 @@ function collectSnapshot(): DegreeSnapshot | undefined {
   const creditHours = valueForLabel(LABEL_TEXT.creditHours)
   const pendingCourses = collectPendingCourses()
 
-  if (
-    gradePoints === undefined ||
-    creditHours === undefined ||
-    pendingCourses.length === 0
-  ) {
+  if (gradePoints === undefined || creditHours === undefined || pendingCourses.length === 0) {
     return undefined
   }
 
