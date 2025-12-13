@@ -232,7 +232,7 @@
       <div class="flex items-center justify-between">
         <span class="text-sm font-medium text-slate-700">one.uf gpa calculator</span>
         {#if current !== undefined}
-          <span class="text-xs text-slate-400">{current.term}</span>
+          <span class="text-xs font-medium text-slate-500">{current.term}</span>
         {/if}
       </div>
       {#if current !== undefined}
