@@ -37,7 +37,7 @@
   function handleClose() {
     closeTimeout = setTimeout(() => {
       showOptions = false
-    }, 200)
+    }, 150)
   }
 
   function handleListFocusIn() {
