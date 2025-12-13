@@ -22,14 +22,6 @@
 
   let pollingInterval: ReturnType<typeof setInterval>
 
-  function handleOpen() {
-    showOptions = true
-  }
-
-  function handleClose() {
-    showOptions = false
-  }
-
   let projection: ProjectionDetails = {
     addedGradePoints: 0,
     addedCreditHours: 0,
@@ -326,7 +318,12 @@
               clear all
               <X size={12} strokeWidth={2} />
             </button>
-            <div class="relative options-container" role="group" on:mouseenter={handleOpen} on:mouseleave={handleClose}>
+            <div
+              class="relative options-container"
+              role="group"
+              on:mouseenter={() => (showOptions = true)}
+              on:mouseleave={() => (showOptions = false)}
+            >
               <button
                 tabindex="-1"
                 class="text-xs text-slate-600 hover:text-black transition-colors tracking-wide flex items-center gap-1"
