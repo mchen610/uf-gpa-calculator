@@ -54,13 +54,11 @@
   interface ProjectionDetails {
     addedGradePoints: number
     recognizedHours: number
-    enteredCount: number
   }
 
   let projection: ProjectionDetails = {
     addedGradePoints: 0,
     recognizedHours: 0,
-    enteredCount: 0,
   }
 
   let gpaDiff: number = 0
@@ -80,7 +78,6 @@
       recognizedHours: sum(inputs, (i) =>
         i.points === undefined ? 0 : i.course.credits,
       ),
-      enteredCount: inputs.length,
     }
   }
 
