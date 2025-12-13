@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte'
   import type { DegreeSnapshot, PendingCourse, ProjectionDetails } from '$shared/types'
-  import { GRADE_POINTS, normalizeGradeInput, computeProjection, isValidGrade } from './lib/grades'
+  import { GRADE_POINTS, normalizeGradeInput, computeProjection, isValidGrade, type Grade } from './lib/grades'
   import { getDegreeSnapshot } from './lib/api'
-  import { loadSavedGrades, saveValidGrades } from './lib/storage'
+  import { loadLocalState, saveLocalState } from './lib/storage'
   import { round } from '$shared/utils'
   import { cn } from './lib/utils'
   import { typedKeys } from '$shared/typeUtils'
@@ -172,13 +172,19 @@
       pendingCourses = pendingCourses.map((c) => (c.code === courseId ? { ...c, grade: normalized } : c))
     }
 
-    saveValidGrades(rawUserInputs)
+    const grades: Record<string, Grade> = {}
+    for (const course of pendingCourses) {
+      if (course.grade) {
+        grades[course.code] = course.grade
+      }
+    }
+    saveLocalState({ grades, lastFocusedCourseId: courseId })
   }
 
   function clearAllInputs(): void {
     rawUserInputs = {}
     pendingCourses = pendingCourses.map((c) => ({ ...c, grade: undefined }))
-    saveValidGrades(rawUserInputs)
+    saveLocalState({ grades: {}, lastFocusedCourseId: 'unset' })
   }
 
   async function fetchSnapshot(): Promise<void> {
@@ -197,11 +203,18 @@
     const { gradePoints, creditHours, term } = data
     current = { gradePoints, creditHours, term }
 
-    const savedGrades = await loadSavedGrades()
-    pendingCourses = data.pendingCourses.map((course) => ({ ...course, grade: savedGrades[course.code] }))
-    rawUserInputs = savedGrades
+    const { grades, lastFocusedCourseId } = await loadLocalState()
+    pendingCourses = data.pendingCourses.map((course) => ({ ...course, grade: grades[course.code] }))
+    rawUserInputs = grades
+
     await tick()
-    focusFirstInput()
+
+    const lastFocusedIndex = pendingCourses.findIndex((c) => c.code === lastFocusedCourseId)
+    if (lastFocusedIndex === -1) {
+      focusInput(0)
+    } else {
+      focusInput(lastFocusedIndex)
+    }
   }
 
   onMount(() => {
