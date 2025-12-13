@@ -11,6 +11,6 @@ export interface DegreeSnapshot {
   gradePoints: number | undefined
   hoursCarried: number | undefined
   currentGpa: number | undefined
-  pendingClasses: PendingCourse[]
+  pendingCourses: PendingCourse[]
 }
 

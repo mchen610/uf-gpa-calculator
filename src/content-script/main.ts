@@ -40,7 +40,7 @@ function valueForLabel(targetLabelText: string): number | undefined {
   return undefined
 }
 
-function collectPendingClasses(): PendingCourse[] {
+function collectPendingCourses(): PendingCourse[] {
   const pending: PendingCourse[] = []
   // Select all course title paragraphs by their aria-label pattern
   const titleElements = document.querySelectorAll(
@@ -92,12 +92,12 @@ function collectPendingClasses(): PendingCourse[] {
 function collectSnapshot(): DegreeSnapshot | undefined {
   const gradePoints = valueForLabel(LABEL_TEXT.gradePoints)
   const hoursCarried = valueForLabel(LABEL_TEXT.hoursCarried)
-  const pendingClasses = collectPendingClasses()
+  const pendingCourses = collectPendingCourses()
 
   if (
     gradePoints === undefined ||
     hoursCarried === undefined ||
-    pendingClasses.length === 0
+    pendingCourses.length === 0
   ) {
     return undefined
   }
@@ -108,7 +108,7 @@ function collectSnapshot(): DegreeSnapshot | undefined {
     gradePoints,
     hoursCarried,
     currentGpa,
-    pendingClasses,
+    pendingCourses,
   }
 
   return snapshot

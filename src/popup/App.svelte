@@ -13,9 +13,9 @@
     gradePoints: undefined,
     hoursCarried: undefined,
     currentGpa: undefined,
-    pendingClasses: [],
+    pendingCourses: [],
   }
-  let pendingClasses: PendingCourse[] = []
+  let pendingCourses: PendingCourse[] = []
 
   let rawUserInputs: Record<string, string | undefined> = {}
 
@@ -68,7 +68,7 @@
   let currentUrl = ''
 
   function computeProjection(): ProjectionDetails {
-    const inputs = pendingClasses.map((course) => {
+    const inputs = pendingCourses.map((course) => {
       const { grade } = course
       const points = grade ? GRADE_POINTS[grade] : undefined
       return { course, grade, points }
@@ -103,8 +103,8 @@
     let nextIndex = isDown ? index + 1 : index - 1
 
     if (nextIndex < 0) {
-      nextIndex = pendingClasses.length - 1
-    } else if (nextIndex >= pendingClasses.length) {
+      nextIndex = pendingCourses.length - 1
+    } else if (nextIndex >= pendingCourses.length) {
       nextIndex = 0
     }
 
@@ -180,12 +180,12 @@
     }
     if (event.key === 'ArrowUp') {
       event.preventDefault()
-      focusInput(pendingClasses.length - 1)
+      focusInput(pendingCourses.length - 1)
       return
     }
     if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
       focusInput(0)
-      handleHorizontalNavigation(event, pendingClasses[0].id)
+      handleHorizontalNavigation(event, pendingCourses[0].id)
       return
     }
 
@@ -233,17 +233,17 @@
 
     if (doAllAtOnce) {
       const newInputs = { ...rawUserInputs }
-      for (const course of pendingClasses) {
+      for (const course of pendingCourses) {
         newInputs[course.id] = sanitized
       }
       rawUserInputs = newInputs
-      pendingClasses = pendingClasses.map((c) => ({ ...c, grade: normalized }))
+      pendingCourses = pendingCourses.map((c) => ({ ...c, grade: normalized }))
     } else {
       rawUserInputs = {
         ...rawUserInputs,
         [courseId]: sanitized,
       }
-      pendingClasses = pendingClasses.map((c) =>
+      pendingCourses = pendingCourses.map((c) =>
         c.id === courseId ? { ...c, grade: normalized } : c,
       )
     }
@@ -253,7 +253,7 @@
 
   function clearAllInputs(): void {
     rawUserInputs = {}
-    pendingClasses = pendingClasses.map((c) => ({ ...c, grade: undefined }))
+    pendingCourses = pendingCourses.map((c) => ({ ...c, grade: undefined }))
     recalculate()
   }
 
@@ -284,7 +284,7 @@
   async function applySnapshot(data: DegreeSnapshot): Promise<void> {
     rawUserInputs = {}
     current = data
-    pendingClasses = data.pendingClasses
+    pendingCourses = data.pendingCourses
     recalculate()
 
     await tick()
@@ -464,7 +464,7 @@
           </div>
         </div>
 
-        {#if pendingClasses.length === 0}
+        {#if pendingCourses.length === 0}
           <div class="py-6 text-center text-xs text-slate-400">
             Sync with your UF grade summary to see classes.
           </div>
@@ -474,7 +474,7 @@
             on:focusin={handleListFocusIn}
             on:focusout={handleListFocusOut}
           >
-            {#each pendingClasses as course, index}
+            {#each pendingCourses as course, index}
               <li class="flex items-center gap-3 py-2 group">
                 <input
                   id={getInputElementId(index)}
