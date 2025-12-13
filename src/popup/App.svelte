@@ -438,7 +438,7 @@
                   )}
                 >
                   <label
-                    class="flex items-center gap-2 text-xs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer"
+                    class="flex items-center gap-2 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer"
                   >
                     <input
                       type="checkbox"
@@ -448,7 +448,7 @@
                     skip +/- grades
                   </label>
                   <label
-                    class="flex items-center gap-2 text-xs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer"
+                    class="flex items-center gap-2 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer"
                   >
                     <input
                       type="checkbox"
