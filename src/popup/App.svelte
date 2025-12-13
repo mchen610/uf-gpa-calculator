@@ -1,10 +1,6 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte'
-  import type {
-    DegreeSnapshot,
-    PendingCourse,
-    ProjectionDetails,
-  } from '$lib/types'
+  import type { DegreeSnapshot, PendingCourse, ProjectionDetails } from '$lib/types'
   import { GRADE_POINTS, normalizeGradeInput } from '$lib/grades'
   import { sum, cn, round } from '$lib/utils'
   import { typedKeys } from '$lib/typeUtils'
@@ -71,12 +67,8 @@
     })
 
     return {
-      addedGradePoints: sum(userInputs, (input) =>
-        input === undefined ? 0 : input.points * input.credits,
-      ),
-      addedCreditHours: sum(userInputs, (input) =>
-        input === undefined ? 0 : input.credits,
-      ),
+      addedGradePoints: sum(userInputs, (input) => (input === undefined ? 0 : input.points * input.credits)),
+      addedCreditHours: sum(userInputs, (input) => (input === undefined ? 0 : input.credits)),
     }
   }
 
@@ -126,11 +118,7 @@
     setGradeInput(courseId, nextGrade)
   }
 
-  function handleInputKeydown(
-    event: KeyboardEvent,
-    index: number,
-    courseId: string,
-  ) {
+  function handleInputKeydown(event: KeyboardEvent, index: number, courseId: string) {
     if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
       handleVerticalNavigation(event, index)
     } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
@@ -142,10 +130,7 @@
     if (event.defaultPrevented) return
 
     if (event.key === 'Escape') {
-      if (
-        event.target instanceof HTMLInputElement ||
-        event.target instanceof HTMLTextAreaElement
-      ) {
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
         event.target.blur()
         event.preventDefault()
         return
@@ -157,10 +142,7 @@
       }
     }
 
-    if (
-      event.target instanceof HTMLInputElement ||
-      event.target instanceof HTMLTextAreaElement
-    ) {
+    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
       return
     }
 
@@ -190,10 +172,7 @@
   }
 
   function handleClickOutside(event: MouseEvent) {
-    if (
-      showOptions &&
-      !(event.target as Element).closest('.options-container')
-    ) {
+    if (showOptions && !(event.target as Element).closest('.options-container')) {
       showOptions = false
     }
   }
@@ -234,9 +213,7 @@
         ...rawUserInputs,
         [courseId]: sanitized,
       }
-      pendingCourses = pendingCourses.map((c) =>
-        c.id === courseId ? { ...c, grade: normalized } : c,
-      )
+      pendingCourses = pendingCourses.map((c) => (c.id === courseId ? { ...c, grade: normalized } : c))
     }
 
     recalculate()
@@ -291,22 +268,14 @@
 
 <svelte:window on:keydown={handleKeydown} on:click={handleClickOutside} />
 
-<main
-  class={cn(
-    'min-w-96',
-    'font-sans bg-white text-slate-800',
-    'selection:bg-indigo-50 selection:text-indigo-900',
-  )}
->
+<main class={cn('min-w-96', 'font-sans bg-white text-slate-800', 'selection:bg-indigo-50 selection:text-indigo-900')}>
   <div class="mx-auto flex w-full max-w-md flex-col p-6 pb-3 space-y-3">
     <!-- Header -->
     <header class="space-y-1">
       <h1 class="text-sm font-medium text-slate-700">one.uf gpa calculator</h1>
 
       {#if current.gradePoints !== undefined && current.creditHours !== undefined}
-        <p class="text-xs text-slate-400">
-          use arrow keys to navigate between grades and courses
-        </p>
+        <p class="text-xs text-slate-400">use arrow keys to navigate between grades and courses</p>
       {/if}
     </header>
 
@@ -315,12 +284,8 @@
       <div class="flex flex-col items-center justify-center py-12 text-center">
         {#if currentUrl.includes('one.uf.edu/transcript')}
           <div class="flex flex-col items-center gap-3">
-            <div
-              class="h-5 w-5 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-600"
-            ></div>
-            <p class="text-xs text-slate-500">
-              Waiting for transcript to load...
-            </p>
+            <div class="h-5 w-5 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-600"></div>
+            <p class="text-xs text-slate-500">Waiting for transcript to load...</p>
           </div>
         {:else}
           <div class="flex items-center gap-1">
@@ -341,9 +306,7 @@
           <div class="text-xs text-slate-400 mb-0.5">current gpa</div>
           <div class="text-sm text-slate-900 flex items-baseline">
             {round(current.gradePoints / current.creditHours)}
-            <span
-              class="text-xxs text-slate-400 font-normal ml-1 tracking-wider inline-flex gap-0.5"
-            >
+            <span class="text-xxs text-slate-400 font-normal ml-1 tracking-wider inline-flex gap-0.5">
               <span>{round(current.gradePoints)}</span>
               <span>/</span>
               <span>{round(current.creditHours, 0)}</span>
@@ -354,12 +317,9 @@
           <div class="text-xs text-slate-400 mb-0.5">projected gpa</div>
           <div class="text-sm text-indigo-500 flex items-baseline">
             {round(
-              (current.gradePoints + projection.addedGradePoints) /
-                (current.creditHours + projection.addedCreditHours),
+              (current.gradePoints + projection.addedGradePoints) / (current.creditHours + projection.addedCreditHours),
             )}
-            <span
-              class="text-xxs text-indigo-300 font-normal ml-1 tracking-wider inline-flex gap-0.5"
-            >
+            <span class="text-xxs text-indigo-300 font-normal ml-1 tracking-wider inline-flex gap-0.5">
               <span>
                 {round(current.gradePoints + projection.addedGradePoints, 2)}
               </span>
@@ -413,10 +373,7 @@
               on:focusin={handleOpen}
               on:focusout={handleClose}
             >
-              <button
-                tabindex="-1"
-                class="text-xs text-slate-600 hover:text-black transition-colors tracking-wide flex gap-1"
-              >
+              <button tabindex="-1" class="text-xs text-slate-600 hover:text-black transition-colors tracking-wide">
                 options
               </button>
 
@@ -456,17 +413,11 @@
         </div>
 
         {#if pendingCourses.length === 0}
-          <div class="py-6 text-center text-xs text-slate-400">
-            Sync with your UF grade summary to see classes.
-          </div>
+          <div class="py-6 text-center text-xs text-slate-400">Sync with your UF grade summary to see classes.</div>
         {:else}
-          <ul
-            class="flex flex-col gap-1"
-            on:focusin={handleListFocusIn}
-            on:focusout={handleListFocusOut}
-          >
+          <ul class="flex flex-col gap-1" on:focusin={handleListFocusIn} on:focusout={handleListFocusOut}>
             {#each pendingCourses as course, index}
-              <li class="flex items-center gap-3 py-2 group">
+              <li class="flex items-center gap-3 py-2">
                 <input
                   id={getInputElementId(index)}
                   class={cn(
@@ -474,24 +425,18 @@
                     'text-center text-sm',
                     'bg-transparent text-slate-600 placeholder:text-slate-300',
                     'outline-none transition-colors focus:placeholder:text-transparent focus:border-indigo-600',
-                    doAllAtOnce && anyInputFocused
-                      ? 'border-indigo-600'
-                      : 'border-slate-300',
+                    doAllAtOnce && anyInputFocused ? 'border-indigo-600' : 'border-slate-300',
                   )}
                   type="text"
                   value={rawUserInputs[course.id] ?? ''}
-                  on:input={(event) =>
-                    setGradeInput(course.id, event.currentTarget.value)}
-                  on:keydown={(event) =>
-                    handleInputKeydown(event, index, course.id)}
+                  on:input={(event) => setGradeInput(course.id, event.currentTarget.value)}
+                  on:keydown={(event) => handleInputKeydown(event, index, course.id)}
                   maxlength="2"
                   placeholder={'X'}
                 />
                 <div class="flex flex-col">
                   <span class="text-xs text-slate-700">{course.title}</span>
-                  <span class="text-xs text-slate-400"
-                    >{course.credits} credits</span
-                  >
+                  <span class="text-xs text-slate-400">{course.credits} credits</span>
                 </div>
               </li>
             {/each}
