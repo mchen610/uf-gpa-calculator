@@ -22,10 +22,11 @@ export async function getUnofficialTranscript(): Promise<{ transcript?: Unoffici
 }
 
 function parseTranscriptToSnapshot(transcript: UnofficialTranscriptResponse): DegreeSnapshot | undefined {
-  const undergrad = transcript.records.undergraduate
-  if (!undergrad) return undefined
+  const records = Object.values(transcript.records).filter((r) => r !== undefined)
+  const record = records.sort((a, b) => (b.terms.at(-1)?.termCode ?? 0) - (a.terms.at(-1)?.termCode ?? 0))[0]
+  if (!record) return undefined
 
-  const currentTerm = undergrad.terms.at(-1)
+  const currentTerm = record.terms.at(-1)
   if (!currentTerm) return undefined
 
   const pendingCourses: PendingCourse[] = currentTerm.creditSources
@@ -43,8 +44,8 @@ function parseTranscriptToSnapshot(transcript: UnofficialTranscriptResponse): De
   const pendingCreditHours = sum(pendingCourses, (course) => course.credits)
 
   return {
-    gradePoints: parseFloat(undergrad.gradePointsEarned),
-    creditHours: parseFloat(undergrad.ufHoursCarried) - pendingCreditHours,
+    gradePoints: parseFloat(record.gradePointsEarned),
+    creditHours: parseFloat(record.ufHoursCarried) - pendingCreditHours,
     term: currentTerm.termDescription,
     pendingCourses,
   }

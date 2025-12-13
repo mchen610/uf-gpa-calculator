@@ -1,4 +1,4 @@
-import type { Grade } from "src/popup/lib/grades"
+import type { Grade } from 'src/popup/lib/grades'
 
 export interface PendingCourse {
   code: string
@@ -18,7 +18,6 @@ export interface ProjectionDetails {
   addedGradePoints: number
   addedCreditHours: number
 }
-
 
 // =========================
 // Transcript UF API types
@@ -68,17 +67,17 @@ export interface TranscriptTerm {
   creditSources: TranscriptCreditSource[]
 }
 
-export interface TranscriptRecords {
-  undergraduate?: {
-    ufGpa: string
-    totalHoursEarned: string
-    gradePointsEarned: string
-    ufHoursEarned: string
-    ufHoursCarried: string
-    transferHoursEarned: string
-    terms: TranscriptTerm[]
-  }
+export interface TranscriptRecord {
+  ufGpa: string
+  totalHoursEarned: string
+  gradePointsEarned: string
+  ufHoursEarned: string
+  ufHoursCarried: string
+  transferHoursEarned: string
+  terms: TranscriptTerm[]
 }
+
+export type TranscriptRecords = Record<string, TranscriptRecord | undefined>
 
 export interface TranscriptPersonalInfo {
   name: string
