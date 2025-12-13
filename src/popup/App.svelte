@@ -10,15 +10,7 @@
   const ALL_POSSIBLE_GRADES = ['', ...typedKeys(GRADE_POINTS)]
   const GRADES_WITHOUT_PLUSES_OR_MINUSES = ALL_POSSIBLE_GRADES.filter((g) => g.length <= 1)
 
-  let current: {
-    gradePoints: number | undefined
-    creditHours: number | undefined
-    term: string | undefined
-  } = {
-    gradePoints: undefined,
-    creditHours: undefined,
-    term: undefined,
-  }
+  let current: Omit<DegreeSnapshot, 'pendingCourses'> | undefined = undefined
   let pendingCourses: PendingCourse[] = []
 
   let rawUserInputs: Record<string, string | undefined> = {}
@@ -265,17 +257,17 @@
       <div class="space-y-1">
         <span class="text-sm font-medium text-slate-700">one.uf gpa calculator</span>
 
-        {#if current.gradePoints !== undefined && current.creditHours !== undefined && current.term !== undefined}
+        {#if current !== undefined}
           <p class="text-xs text-slate-400">use arrow keys to try different letter grades.</p>
         {/if}
       </div>
-      {#if current.gradePoints !== undefined && current.creditHours !== undefined && current.term !== undefined}
+      {#if current !== undefined}
         <span class="text-xs text-slate-400">{current.term}</span>
       {/if}
     </header>
 
     <!-- Stats Row -->
-    {#if current.gradePoints === undefined || current.creditHours === undefined}
+    {#if current === undefined}
       <div class="flex flex-col items-center justify-center py-12 text-center">
         {#if currentUrl.includes('one.uf.edu/transcript')}
           <div class="flex flex-col items-center gap-3">
