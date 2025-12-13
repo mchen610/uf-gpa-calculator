@@ -2,7 +2,7 @@ import type { DegreeSnapshot, PendingCourse } from '$lib/types'
 
 const LABEL_TEXT = {
   gradePoints: 'UF Cumulative Grade Points',
-  hoursCarried: 'UF Cumulative Hours Carried',
+  creditHours: 'UF Cumulative Hours Carried',
 } as const
 
 const NORMALIZE_WHITESPACE = /\s+/g
@@ -91,12 +91,12 @@ function collectPendingCourses(): PendingCourse[] {
 
 function collectSnapshot(): DegreeSnapshot | undefined {
   const gradePoints = valueForLabel(LABEL_TEXT.gradePoints)
-  const hoursCarried = valueForLabel(LABEL_TEXT.hoursCarried)
+  const creditHours = valueForLabel(LABEL_TEXT.creditHours)
   const pendingCourses = collectPendingCourses()
 
   if (
     gradePoints === undefined ||
-    hoursCarried === undefined ||
+    creditHours === undefined ||
     pendingCourses.length === 0
   ) {
     return undefined
@@ -104,7 +104,7 @@ function collectSnapshot(): DegreeSnapshot | undefined {
 
   const snapshot: DegreeSnapshot = {
     gradePoints,
-    hoursCarried,
+    creditHours,
     pendingCourses,
   }
 

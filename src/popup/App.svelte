@@ -1,6 +1,10 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte'
-  import type { DegreeSnapshot, PendingCourse } from '$lib/types'
+  import type {
+    DegreeSnapshot,
+    PendingCourse,
+    ProjectionDetails,
+  } from '$lib/types'
   import { GRADE_POINTS, normalizeGradeInput } from '$lib/grades'
   import { sum, cn, round } from '$lib/utils'
   import { typedKeys } from '$lib/typeUtils'
@@ -11,7 +15,7 @@
 
   let current: DegreeSnapshot = {
     gradePoints: undefined,
-    hoursCarried: undefined,
+    creditHours: undefined,
     pendingCourses: [],
   }
   let pendingCourses: PendingCourse[] = []
@@ -51,14 +55,9 @@
     }
   }
 
-  interface ProjectionDetails {
-    addedGradePoints: number
-    recognizedHours: number
-  }
-
   let projection: ProjectionDetails = {
     addedGradePoints: 0,
-    recognizedHours: 0,
+    addedCreditHours: 0,
   }
 
   let gpaDiff: number = 0
@@ -75,7 +74,7 @@
       addedGradePoints: sum(userInputs, (input) =>
         input === undefined ? 0 : input.points * input.credits,
       ),
-      recognizedHours: sum(userInputs, (input) =>
+      addedCreditHours: sum(userInputs, (input) =>
         input === undefined ? 0 : input.credits,
       ),
     }
@@ -202,15 +201,15 @@
   function recalculate(): void {
     projection = computeProjection()
 
-    if (current.gradePoints == undefined || current.hoursCarried == undefined) {
+    if (current.gradePoints == undefined || current.creditHours == undefined) {
       gpaDiff = 0
       return
     }
 
     const totalGradePoints = current.gradePoints + projection.addedGradePoints
-    const totalHours = current.hoursCarried + projection.recognizedHours
+    const totalHours = current.creditHours + projection.addedCreditHours
     const projectedGpa = totalHours > 0 ? totalGradePoints / totalHours : 0
-    gpaDiff = projectedGpa - current.gradePoints / current.hoursCarried
+    gpaDiff = projectedGpa - current.gradePoints / current.creditHours
   }
 
   function handleBatchFillChange() {
@@ -304,7 +303,7 @@
     <header class="space-y-1">
       <h1 class="text-sm font-medium text-slate-700">one.uf gpa calculator</h1>
 
-      {#if current.gradePoints !== undefined && current.hoursCarried !== undefined}
+      {#if current.gradePoints !== undefined && current.creditHours !== undefined}
         <p class="text-xs text-slate-400">
           use arrow keys to navigate between grades and courses
         </p>
@@ -312,7 +311,7 @@
     </header>
 
     <!-- Stats Row -->
-    {#if current.gradePoints === undefined || current.hoursCarried === undefined}
+    {#if current.gradePoints === undefined || current.creditHours === undefined}
       <div class="flex flex-col items-center justify-center py-12 text-center">
         {#if currentUrl.includes('one.uf.edu/transcript')}
           <div class="flex flex-col items-center gap-3">
@@ -341,13 +340,13 @@
         <div>
           <div class="text-xs text-slate-400 mb-0.5">current gpa</div>
           <div class="text-sm text-slate-900 flex items-baseline">
-            {round(current.gradePoints / current.hoursCarried)}
+            {round(current.gradePoints / current.creditHours)}
             <span
               class="text-xxs text-slate-400 font-normal ml-1 tracking-wider inline-flex gap-0.5"
             >
               <span>{round(current.gradePoints)}</span>
               <span>/</span>
-              <span>{round(current.hoursCarried, 0)}</span>
+              <span>{round(current.creditHours, 0)}</span>
             </span>
           </div>
         </div>
@@ -356,7 +355,7 @@
           <div class="text-sm text-indigo-500 flex items-baseline">
             {round(
               (current.gradePoints + projection.addedGradePoints) /
-                (current.hoursCarried + projection.recognizedHours),
+                (current.creditHours + projection.addedCreditHours),
             )}
             <span
               class="text-xxs text-indigo-300 font-normal ml-1 tracking-wider inline-flex gap-0.5"
@@ -366,7 +365,7 @@
               </span>
               <span>/</span>
               <span>
-                {round(current.hoursCarried + projection.recognizedHours, 0)}
+                {round(current.creditHours + projection.addedCreditHours, 0)}
               </span>
             </span>
           </div>

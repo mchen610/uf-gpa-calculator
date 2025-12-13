@@ -9,7 +9,11 @@ export interface PendingCourse {
 
 export interface DegreeSnapshot {
   gradePoints: number | undefined
-  hoursCarried: number | undefined
+  creditHours: number | undefined
   pendingCourses: PendingCourse[]
 }
 
+export interface ProjectionDetails {
+  addedGradePoints: number
+  addedCreditHours: number
+}
