@@ -302,7 +302,7 @@
 
 <main
   class={cn(
-    'min-w-[360px]',
+    'min-w-96',
     'font-sans bg-white text-slate-800',
     'selection:bg-indigo-50 selection:text-indigo-900',
   )}
@@ -313,7 +313,7 @@
       <h1 class="text-sm font-medium text-slate-700">one.uf gpa calculator</h1>
 
       {#if current.gradePoints !== undefined && current.hoursCarried !== undefined && current.currentGpa !== undefined}
-        <p class="text-[11px] text-slate-400">
+        <p class="text-xs text-slate-400">
           use arrow keys to navigate between grades and courses
         </p>
       {/if}
@@ -433,7 +433,7 @@
                 <div
                   class={cn(
                     'absolute right-0 top-full z-10 mt-1',
-                    'flex flex-col gap-2 min-w-[140px] p-2',
+                    'flex flex-col gap-2 min-w-32 p-2',
                     'bg-white shadow-lg border border-slate-100 rounded-md',
                   )}
                 >
