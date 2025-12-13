@@ -4,6 +4,7 @@
   import { GRADE_POINTS, normalizeGradeInput } from '$lib/grades'
   import { sum, cn, round } from '$lib/utils'
   import { typedKeys } from '$lib/typeUtils'
+  import { X, Settings2 } from 'lucide-svelte'
 
   const POLLING_INTERVAL = 100
   const ALL_POSSIBLE_GRADES = ['', ...typedKeys(GRADE_POINTS)]
@@ -341,7 +342,7 @@
 
       <!-- Pending Classes Section -->
       <section>
-        <div class="flex items-start justify-between mb-2">
+        <div class="flex items-end justify-between mb-2">
           <div class="flex flex-col gap-0.5">
             <div class="text-xs text-slate-400">gpa diff</div>
             <div
@@ -361,9 +362,10 @@
             <button
               on:click={clearAllInputs}
               tabindex="-1"
-              class="text-xs text-slate-400 hover:text-slate-600 transition-colors tracking-wide"
+              class="text-xs text-slate-400 hover:text-slate-600 transition-colors tracking-wide flex items-center gap-1"
             >
               clear all
+              <X size={12} strokeWidth={2} />
             </button>
             <div
               class="relative options-container"
@@ -373,8 +375,9 @@
               on:focusin={handleOpen}
               on:focusout={handleClose}
             >
-              <button tabindex="-1" class="text-xs text-slate-600 hover:text-black transition-colors tracking-wide">
+              <button tabindex="-1" class="text-xs text-slate-600 hover:text-black transition-colors tracking-wide flex items-center gap-1">
                 options
+                <Settings2 size={12} strokeWidth={2} />
               </button>
 
               {#if showOptions}
