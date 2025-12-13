@@ -41,3 +41,4 @@ export function computeProjection(courses: PendingCourse[]): ProjectionDetails {
     addedCreditHours: sum(userInputs, (input) => (input === undefined ? 0 : input.credits)),
   }
 }
+
