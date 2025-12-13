@@ -293,7 +293,7 @@
           <div>
             <p class="text-xs text-indigo-400 mb-0.5">projected gpa</p>
             <p>
-              <span class="text-sm text-indigo-500">
+              <span class="text-sm font-medium text-indigo-500">
                 {round(
                   (current.gradePoints + projection.addedGradePoints) /
                     (current.creditHours + projection.addedCreditHours),
