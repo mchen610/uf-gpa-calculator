@@ -351,7 +351,7 @@
           <div class="text-sm text-slate-900 flex items-baseline">
             {round(current.currentGpa)}
             <span
-              class="text-[10px] text-slate-400 font-normal ml-1 tracking-wider inline-flex gap-0.5"
+              class="text-xxs text-slate-400 font-normal ml-1 tracking-wider inline-flex gap-0.5"
             >
               <span>{round(current.gradePoints)}</span>
               <span>/</span>
@@ -367,7 +367,7 @@
                 (current.hoursCarried + projection.recognizedHours),
             )}
             <span
-              class="text-[10px] text-indigo-300 font-normal ml-1 tracking-wider inline-flex gap-0.5"
+              class="text-xxs text-indigo-300 font-normal ml-1 tracking-wider inline-flex gap-0.5"
             >
               <span>
                 {round(current.gradePoints + projection.addedGradePoints, 2)}
