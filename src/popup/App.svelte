@@ -494,7 +494,7 @@
                   on:keydown={(event) =>
                     handleInputKeydown(event, index, course.id)}
                   maxlength="2"
-                  placeholder={'-'}
+                  placeholder={'X'}
                 />
                 <div class="flex flex-col">
                   <span class="text-xs text-slate-700">{course.title}</span>
