@@ -102,12 +102,9 @@ function collectSnapshot(): DegreeSnapshot | undefined {
     return undefined
   }
 
-  const currentGpa = gradePoints / hoursCarried
-
   const snapshot: DegreeSnapshot = {
     gradePoints,
     hoursCarried,
-    currentGpa,
     pendingCourses,
   }
 

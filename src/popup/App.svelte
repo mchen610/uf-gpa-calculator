@@ -12,7 +12,6 @@
   let current: DegreeSnapshot = {
     gradePoints: undefined,
     hoursCarried: undefined,
-    currentGpa: undefined,
     pendingCourses: [],
   }
   let pendingCourses: PendingCourse[] = []
@@ -208,8 +207,7 @@
 
     if (
       current.gradePoints == undefined ||
-      current.hoursCarried == undefined ||
-      current.currentGpa == undefined
+      current.hoursCarried == undefined
     ) {
       gpaDiff = 0
       return
@@ -218,7 +216,7 @@
     const totalGradePoints = current.gradePoints + projection.addedGradePoints
     const totalHours = current.hoursCarried + projection.recognizedHours
     const projectedGpa = totalHours > 0 ? totalGradePoints / totalHours : 0
-    gpaDiff = projectedGpa - current.currentGpa
+    gpaDiff = projectedGpa - current.gradePoints / current.hoursCarried
   }
 
   function handleBatchFillChange() {
@@ -312,7 +310,7 @@
     <header class="space-y-1">
       <h1 class="text-sm font-medium text-slate-700">one.uf gpa calculator</h1>
 
-      {#if current.gradePoints !== undefined && current.hoursCarried !== undefined && current.currentGpa !== undefined}
+      {#if current.gradePoints !== undefined && current.hoursCarried !== undefined}
         <p class="text-xs text-slate-400">
           use arrow keys to navigate between grades and courses
         </p>
@@ -320,7 +318,7 @@
     </header>
 
     <!-- Stats Row -->
-    {#if current.gradePoints === undefined || current.hoursCarried === undefined || current.currentGpa === undefined}
+    {#if current.gradePoints === undefined || current.hoursCarried === undefined}
       <div class="flex flex-col items-center justify-center py-12 text-center">
         {#if currentUrl.includes('one.uf.edu/transcript')}
           <div class="flex flex-col items-center gap-3">
@@ -349,7 +347,7 @@
         <div>
           <div class="text-xs text-slate-400 mb-0.5">current gpa</div>
           <div class="text-sm text-slate-900 flex items-baseline">
-            {round(current.currentGpa)}
+            {round(current.gradePoints / current.hoursCarried)}
             <span
               class="text-xxs text-slate-400 font-normal ml-1 tracking-wider inline-flex gap-0.5"
             >
