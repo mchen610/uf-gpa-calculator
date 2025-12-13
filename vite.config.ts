@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 import { crx } from '@crxjs/vite-plugin'
+import checker from 'vite-plugin-checker'
+import zipPack from 'vite-plugin-zip-pack'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import tailwindcss from 'tailwindcss'
@@ -14,7 +16,20 @@ const rootDir = path.resolve(currentDir, 'src')
 export default defineConfig({
   root: rootDir,
   publicDir: path.resolve(currentDir, 'public'),
-  plugins: [svelte(svelteConfig), crx({ manifest })],
+  plugins: [
+    svelte({
+      ...svelteConfig,
+      inspector: true,
+    }),
+    crx({ manifest }),
+    checker({
+      typescript: true,
+    }),
+    zipPack({
+      outDir: currentDir,
+      outFileName: 'extension.zip',
+    }),
+  ],
   css: {
     postcss: {
       plugins: [tailwindcss(), autoprefixer()],
