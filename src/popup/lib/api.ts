@@ -1,24 +1,39 @@
 import type { DegreeSnapshot, PendingCourse, UnofficialTranscriptResponse } from '$shared/types'
 import { sum } from '$shared/utils'
+import { loadLocalState, saveLocalState } from './storage'
 
-export async function getUnofficialTranscript(): Promise<{ transcript?: UnofficialTranscriptResponse; url?: string }> {
-  const [{ id, url }] = await chrome.tabs.query({
-    active: true,
-    currentWindow: true,
-  })
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000
 
-  if (id === undefined || url === undefined) {
-    return { url }
-  }
+async function getCachedTranscript(): Promise<UnofficialTranscriptResponse | undefined> {
+  const { transcriptCache } = await loadLocalState()
+  if (!transcriptCache) return undefined
+
+  const isExpired = Date.now() - transcriptCache.timestamp > CACHE_TTL_MS
+  return isExpired ? undefined : transcriptCache.transcript
+}
+
+async function setCachedTranscript(transcript: UnofficialTranscriptResponse): Promise<void> {
+  await saveLocalState({ transcriptCache: { transcript, timestamp: Date.now() } })
+}
+
+async function fetchTranscript(): Promise<UnofficialTranscriptResponse | undefined> {
+  const [{ id, url }] = await chrome.tabs.query({ active: true, currentWindow: true })
+  if (id === undefined || !url?.includes('one.uf.edu')) return undefined
 
   try {
-    const transcript = await chrome.tabs.sendMessage(id, {
-      type: 'getTranscript',
-    })
-    return { transcript, url }
+    return await chrome.tabs.sendMessage(id, { type: 'getTranscript' })
   } catch {
-    return { url }
+    return undefined
   }
+}
+
+export async function getUnofficialTranscript(): Promise<UnofficialTranscriptResponse | undefined> {
+  const cached = await getCachedTranscript()
+  if (cached) return cached
+
+  const fresh = await fetchTranscript()
+  if (fresh) await setCachedTranscript(fresh)
+  return fresh
 }
 
 function parseTranscriptToSnapshot(transcript: UnofficialTranscriptResponse): DegreeSnapshot | undefined {
@@ -51,13 +66,8 @@ function parseTranscriptToSnapshot(transcript: UnofficialTranscriptResponse): De
   }
 }
 
-export async function getDegreeSnapshot(): Promise<{ snapshot?: DegreeSnapshot; url?: string }> {
-  const { transcript, url } = await getUnofficialTranscript()
-
-  if (!transcript) {
-    return { url }
-  }
-
-  const snapshot = parseTranscriptToSnapshot(transcript)
-  return { snapshot, url }
+export async function getDegreeSnapshot(): Promise<DegreeSnapshot | undefined> {
+  const transcript = await getUnofficialTranscript()
+  if (!transcript) return undefined
+  return parseTranscriptToSnapshot(transcript)
 }

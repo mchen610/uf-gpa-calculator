@@ -185,7 +185,7 @@
   }
 
   async function fetchSnapshot(): Promise<void> {
-    const { snapshot } = await getDegreeSnapshot()
+    const snapshot = await getDegreeSnapshot()
 
     if (snapshot) {
       await applySnapshot(snapshot)
