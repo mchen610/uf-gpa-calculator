@@ -85,12 +85,15 @@ function collectPendingCourses(): PendingCourse[] {
 
 function collectSnapshot(): DegreeSnapshot | undefined {
   const gradePoints = valueForLabel(LABEL_TEXT.gradePoints)
-  const creditHours = valueForLabel(LABEL_TEXT.creditHours)
+  const currentAndPendingCreditHours = valueForLabel(LABEL_TEXT.creditHours)
   const pendingCourses = collectPendingCourses()
 
-  if (gradePoints === undefined || creditHours === undefined || pendingCourses.length === 0) {
+  if (gradePoints === undefined || currentAndPendingCreditHours === undefined || pendingCourses.length === 0) {
     return undefined
   }
+
+  const pendingCreditHours = pendingCourses.reduce((acc, course) => acc + course.credits, 0)
+  const creditHours = currentAndPendingCreditHours - pendingCreditHours
 
   const snapshot: DegreeSnapshot = {
     gradePoints,
