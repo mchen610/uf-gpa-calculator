@@ -1,6 +1,6 @@
-import { typedKeys } from './typeUtils'
-import { sum } from './utils'
-import type { PendingCourse, ProjectionDetails } from './types'
+import { typedKeys } from '$lib/typeUtils'
+import { sum } from '$lib/utils'
+import type { PendingCourse, ProjectionDetails } from '$lib/types'
 
 export const GRADE_POINTS = {
   'A': 4.0,
@@ -32,7 +32,7 @@ export function normalizeGradeInput(raw: string | undefined): Grade | undefined 
 export function computeProjection(courses: PendingCourse[]): ProjectionDetails {
   const userInputs = courses.map((course) => {
     const { credits, grade } = course
-    const points = grade ? GRADE_POINTS[grade] : undefined
+    const points = grade ? (GRADE_POINTS as Record<string, number>)[grade] : undefined
     return points !== undefined ? { credits, points } : undefined
   })
 
@@ -41,3 +41,4 @@ export function computeProjection(courses: PendingCourse[]): ProjectionDetails {
     addedCreditHours: sum(userInputs, (input) => (input === undefined ? 0 : input.credits)),
   }
 }
+

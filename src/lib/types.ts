@@ -1,10 +1,8 @@
-import type { Grade } from './grades'
-
 export interface PendingCourse {
   code: string
   title: string
   credits: number
-  grade: Grade | undefined
+  grade: string | undefined
 }
 
 export interface DegreeSnapshot {

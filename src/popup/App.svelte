@@ -1,9 +1,10 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte'
   import type { DegreeSnapshot, PendingCourse, ProjectionDetails } from '$lib/types'
-  import { GRADE_POINTS, normalizeGradeInput, computeProjection } from '$lib/grades'
+  import { GRADE_POINTS, normalizeGradeInput, computeProjection } from './grades'
   import { getDegreeSnapshot } from './api'
-  import { cn, round } from '$lib/utils'
+  import { round } from '$lib/utils'
+  import { cn } from './utils'
   import { typedKeys } from '$lib/typeUtils'
   import { X, Settings2 } from 'lucide-svelte'
 
