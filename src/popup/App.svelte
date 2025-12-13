@@ -407,7 +407,7 @@
                       <span class="text-xxs text-slate-400">{course.code}</span>
                     {/if}
                   </p>
-                  <p class="text-xs text-indigo-400">{course.credits} credits</p>
+                  <p class="text-xs text-slate-400">{course.credits} credits</p>
                 </div>
               </li>
             {/each}
