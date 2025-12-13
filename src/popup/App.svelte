@@ -259,7 +259,7 @@
       <h1 class="text-sm font-medium text-slate-700">one.uf gpa calculator</h1>
 
       {#if current.gradePoints !== undefined && current.creditHours !== undefined}
-        <p class="text-xs text-slate-400">use arrow keys to navigate between grades and courses!</p>
+        <p class="text-xs text-slate-400">use arrow keys to navigate between grades and courses.</p>
       {/if}
     </header>
 
