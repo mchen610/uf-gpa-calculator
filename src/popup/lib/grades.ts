@@ -32,7 +32,7 @@ export function normalizeGradeInput(raw: string | undefined): Grade | undefined 
 export function computeProjection(courses: PendingCourse[]): ProjectionDetails {
   const userInputs = courses.map((course) => {
     const { credits, grade } = course
-    const points = grade ? (GRADE_POINTS as Record<string, number>)[grade] : undefined
+    const points = grade ? GRADE_POINTS[grade] : undefined
     return points !== undefined ? { credits, points } : undefined
   })
 

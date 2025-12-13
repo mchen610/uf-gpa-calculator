@@ -1,8 +1,10 @@
+import type { Grade } from "src/popup/lib/grades"
+
 export interface PendingCourse {
   code: string
   title: string
   credits: number
-  grade: string | undefined
+  grade: Grade | undefined
 }
 
 export interface DegreeSnapshot {
