@@ -6,9 +6,9 @@
     "default_title": "one.uf gpa calculator",
     "default_popup": "popup/index.html",
     "default_icon": {
-      "16": "uf.png",
-      "48": "uf.png",
-      "128": "uf.png"
+      "16": "one.png",
+      "48": "one.png",
+      "128": "one.png"
     }
   },
   "permissions": [
@@ -29,9 +29,9 @@
     }
   ],
   "icons": {
-    "16": "uf.png",
-    "48": "uf.png",
-    "128": "uf.png"
+    "16": "one.png",
+    "48": "one.png",
+    "128": "one.png"
   }
 }
 
