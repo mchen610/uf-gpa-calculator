@@ -436,7 +436,9 @@
                     <span class="text-xs text-slate-700">{course.title}</span>
                     <span class="text-xxs text-slate-400">{course.code}</span>
                   </p>
-                  <p class="text-xs text-slate-400">{course.credits} credits</p>
+                  <p class={cn('text-xs', inputState === 'valid' ? 'text-blue-400' : 'text-slate-400')}>
+                    {course.credits} credits
+                  </p>
                 </div>
               </li>
             {/each}
