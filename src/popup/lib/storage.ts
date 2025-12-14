@@ -9,13 +9,13 @@ export type TranscriptCache = {
 export type LocalState = {
   grades: Record<string, Grade>
   lastFocusedCourseId: 'unset' | string
-  transcriptCache: TranscriptCache | undefined
+  transcriptCache: TranscriptCache | Record<string, never>
 }
 
 const DEFAULT_STATE: LocalState = {
   grades: {},
   lastFocusedCourseId: 'unset',
-  transcriptCache: undefined,
+  transcriptCache: {},
 }
 
 export async function loadLocalState(): Promise<LocalState> {

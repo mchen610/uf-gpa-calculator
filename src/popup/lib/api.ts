@@ -73,3 +73,8 @@ export async function getDegreeSnapshot(): Promise<DegreeSnapshot | undefined> {
   if (!transcript) return undefined
   return parseTranscriptToSnapshot(transcript)
 }
+
+export async function refreshDegreeSnapshot(): Promise<DegreeSnapshot | undefined> {
+  await saveLocalState({ transcriptCache: {} })
+  return getDegreeSnapshot()
+}

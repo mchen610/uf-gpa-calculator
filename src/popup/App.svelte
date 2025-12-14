@@ -2,12 +2,12 @@
   import { onMount, tick } from 'svelte'
   import type { DegreeSnapshot, PendingCourse, ProjectionDetails } from '$shared/types'
   import { GRADE_POINTS, normalizeGradeInput, computeProjection, isValidGrade, type Grade } from './lib/grades'
-  import { getDegreeSnapshot } from './lib/api'
+  import { getDegreeSnapshot, refreshDegreeSnapshot } from './lib/api'
   import { loadLocalState, saveLocalState } from './lib/storage'
   import { round } from '$shared/utils'
   import { cn } from './lib/utils'
   import { typedKeys } from '$shared/typeUtils'
-  import { X, Settings2 } from 'lucide-svelte'
+  import { X, Settings2, RotateCcw } from 'lucide-svelte'
 
   const ALL_POSSIBLE_GRADES = ['', ...typedKeys(GRADE_POINTS)]
   const GRADES_WITHOUT_PLUSES_OR_MINUSES = ALL_POSSIBLE_GRADES.filter((g) => g.length <= 1)
@@ -22,7 +22,8 @@
   let advancedMode = false
   let showOptions = false
 
-  let isLoading = true
+  let isLoadingTranscript = true
+  let isOnUfWebsite = false
 
   let projection: ProjectionDetails = {
     addedGradePoints: 0,
@@ -191,7 +192,21 @@
       await applySnapshot(snapshot)
     }
 
-    isLoading = false
+    isLoadingTranscript = false
+  }
+
+  async function handleRefresh(): Promise<void> {
+    current = undefined
+    pendingCourses = []
+    isLoadingTranscript = true
+
+    const snapshot = await refreshDegreeSnapshot()
+
+    if (snapshot) {
+      await applySnapshot(snapshot)
+    }
+
+    isLoadingTranscript = false
   }
 
   async function applySnapshot(data: DegreeSnapshot): Promise<void> {
@@ -212,7 +227,13 @@
     }
   }
 
+  async function checkIfOnOneUf(): Promise<void> {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
+    isOnUfWebsite = tab?.url?.includes('one.uf.edu') ?? false
+  }
+
   onMount(() => {
+    checkIfOnOneUf()
     fetchSnapshot()
   })
 </script>
@@ -224,24 +245,29 @@
     <header class="flex flex-col gap-1 mb-4">
       <div class="flex items-center justify-between">
         <span class="text-sm font-medium text-slate-700">one.uf gpa calculator</span>
-        {#if current !== undefined}
-          <span class="text-xs font-medium text-slate-500">{current.term}</span>
-        {/if}
+        <button
+          on:click={handleRefresh}
+          disabled={!isOnUfWebsite || isLoadingTranscript}
+          class="text-slate-400 disabled:cursor-not-allowed"
+          title={isOnUfWebsite ? 'Refresh transcript' : 'Navigate to one.uf.edu to refresh'}
+        >
+          <RotateCcw size={14} />
+        </button>
       </div>
       {#if current !== undefined}
         <p class="text-xs text-slate-400">type a grade (A, B+, C...) or use arrow keys to navigate.</p>
       {/if}
     </header>
 
-    {#if isLoading}
-      <div class="flex flex-col items-center justify-center py-12 text-center">
+    {#if isLoadingTranscript}
+      <div class="h-28 flex flex-col items-center justify-center text-center">
         <div class="flex flex-col items-center gap-3">
           <div class="h-5 w-5 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-600"></div>
-          <p class="text-xs text-slate-500">Loading...</p>
+          <p class="text-xs text-slate-500">loading transcript from uf...</p>
         </div>
       </div>
     {:else if current === undefined}
-      <div class="flex flex-col items-center justify-center py-12 text-center">
+      <div class="h-28 flex flex-col items-center justify-center text-center">
         <div class="flex items-center gap-1">
           <p class="text-xs text-slate-500">navigate to</p>
           <a
