@@ -428,12 +428,16 @@
                     on:keydown={(event) => handleInputKeydown(event, index, course.code)}
                     maxlength="2"
                   />
+                  {#if advancedMode && course.grade}
+                    <span class="absolute -bottom-4 left-1/2 -translate-x-1/2 text-xxs tabular-nums text-blue-400">
+                      {GRADE_POINTS[course.grade].toFixed(2)}
+                    </span>
+                  {/if}
                 </div>
                 <div class="flex flex-col">
                   <p>
                     <span class="text-xs text-slate-700">{course.title}</span>
-                    {#if advancedMode}
-                      <span class="text-xxs text-slate-400">{course.code}</span>
+                    <span class="text-xxs text-slate-400">{course.code}</span>
                   </p>
                   <p class="text-xs text-slate-400">{course.credits} credits</p>
                 </div>
