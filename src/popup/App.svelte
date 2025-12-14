@@ -377,7 +377,7 @@
                         bind:checked={advancedMode}
                         class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-3 w-3 cursor-pointer"
                       />
-                      advanced mode
+                      show details
                     </label>
                   </div>
                 </div>
