@@ -332,11 +332,11 @@
             </p>
           </div>
 
-          <div class="flex flex-col items-end gap-0.5">
+          <div class="flex flex-col items-end gap-1">
             <button
               on:click={clearAllInputs}
               tabindex="-1"
-              class="text-xs text-slate-400 hover:text-slate-600 transition-colors tracking-wide flex items-center gap-1"
+              class="text-xs text-slate-400 hover:text-slate-600 transition-colors tracking-wide flex items-center gap-0.5"
             >
               clear all
               <X size={12} strokeWidth={2} />
@@ -349,7 +349,7 @@
             >
               <button
                 tabindex="-1"
-                class="text-xs text-slate-600 hover:text-black transition-colors tracking-wide flex items-center gap-1"
+                class="text-xs text-slate-600 hover:text-black transition-colors tracking-wide flex items-center gap-0.5"
               >
                 options
                 <Settings2 size={12} strokeWidth={2} />
@@ -359,12 +359,12 @@
                 <div class="absolute right-0 top-full z-10 pt-0.5">
                   <div
                     class={cn(
-                      'flex flex-col gap-2 min-w-32 p-2',
+                      'flex flex-col gap-2 p-2',
                       'bg-white shadow-lg border border-slate-100 rounded-md',
                     )}
                   >
                     <label
-                      class="flex items-center gap-2 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer"
+                      class="flex items-center gap-1 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer text-nowrap"
                     >
                       <input
                         type="checkbox"
@@ -375,7 +375,7 @@
                       do all at once
                     </label>
                     <label
-                      class="flex items-center gap-2 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer"
+                      class="flex items-center gap-1 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer text-nowrap"
                     >
                       <input
                         type="checkbox"
