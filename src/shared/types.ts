@@ -79,19 +79,6 @@ export interface TranscriptRecord {
 }
 
 export type TranscriptRecords = Record<string, TranscriptRecord | undefined>
-
-export interface TranscriptPersonalInfo {
-  name: string
-  ufid: number
-  residency: string
-  residencyDescription: string
-  basisOfAdmissionCode: string
-  basisOfAdmissionDescription: string
-  ssn: string
-  dob: string
-}
-
 export interface UnofficialTranscriptResponse {
-  personalInfo: TranscriptPersonalInfo
   records: TranscriptRecords
 }
