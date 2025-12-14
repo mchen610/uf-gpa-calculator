@@ -11,6 +11,7 @@ export interface DegreeSnapshot {
   gradePoints: number
   creditHours: number
   term: string
+  level: string
   pendingCourses: PendingCourse[]
 }
 

@@ -64,6 +64,7 @@ function parseTranscriptToSnapshot(transcript: UnofficialTranscriptResponse): De
     gradePoints: parseFloat(record.gradePointsEarned),
     creditHours: parseFloat(record.ufHoursCarried) - pendingCreditHours,
     term: currentTerm.termDescription,
+    level: currentTerm.level,
     pendingCourses,
   }
 }

@@ -210,8 +210,8 @@
   }
 
   async function applySnapshot(data: DegreeSnapshot): Promise<void> {
-    const { gradePoints, creditHours, term } = data
-    current = { gradePoints, creditHours, term }
+    const { gradePoints, creditHours, term, level } = data
+    current = { gradePoints, creditHours, term, level }
 
     const { grades, lastFocusedCourseId } = await loadLocalState()
     pendingCourses = data.pendingCourses.map((course) => ({ ...course, grade: grades[course.code] }))
