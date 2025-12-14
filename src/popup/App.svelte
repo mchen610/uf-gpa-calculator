@@ -239,7 +239,7 @@
         <button
           on:click={handleRefresh}
           disabled={!isOnUfWebsite || isLoadingTranscript}
-          class="text-slate-400 disabled:cursor-not-allowed opacity-0 group-hover/header:opacity-100 transition-opacity"
+          class="text-slate-400 disabled:cursor-not-allowed opacity-0 hover:opacity-100 transition-opacity"
           title={isOnUfWebsite ? 'Refresh transcript' : 'Navigate to one.uf.edu to refresh'}
         >
           <RotateCcw size={14} />
