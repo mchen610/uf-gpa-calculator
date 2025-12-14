@@ -16,7 +16,7 @@
 
   let rawUserInputs: Record<string, string | undefined> = {}
 
-  let doAllAtOnce = false
+  let fillAllAtOnce = false
   let advancedMode = false
   let showOptions = false
 
@@ -137,7 +137,7 @@
   }
 
   function handleBatchFillChange() {
-    if (doAllAtOnce) {
+    if (fillAllAtOnce) {
       focusFirstInput()
     }
   }
@@ -146,7 +146,7 @@
     const sanitized = value.trim().toUpperCase()
     const normalized = normalizeGradeInput(sanitized)
 
-    if (doAllAtOnce) {
+    if (fillAllAtOnce) {
       const newInputs = { ...rawUserInputs }
       for (const course of pendingCourses) {
         newInputs[course.code] = sanitized
@@ -363,11 +363,11 @@
                     >
                       <input
                         type="checkbox"
-                        bind:checked={doAllAtOnce}
+                        bind:checked={fillAllAtOnce}
                         on:change={handleBatchFillChange}
                         class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-3 w-3 cursor-pointer"
                       />
-                      do all at once
+                      fill all at once
                     </label>
                     <label
                       class="flex items-center gap-1 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer text-nowrap"
@@ -401,7 +401,7 @@
                     inputState === 'empty' && 'border border-slate-300',
                     inputState === 'valid' && 'border border-blue-200 bg-blue-50',
                     inputState === 'invalid' && 'border border-slate-300',
-                    doAllAtOnce && 'group-focus-within:border-blue-300',
+                    fillAllAtOnce && 'group-focus-within:border-blue-300',
                   )}
                 >
                   <input
