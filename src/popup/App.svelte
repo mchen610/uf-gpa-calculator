@@ -139,12 +139,6 @@
     }
   }
 
-  function handleClickOutside(event: MouseEvent) {
-    if (showOptions && !(event.target as Element).closest('.options-container')) {
-      showOptions = false
-    }
-  }
-
   function handleBatchFillChange() {
     if (doAllAtOnce) {
       focusFirstInput()
@@ -238,7 +232,7 @@
   })
 </script>
 
-<svelte:window on:keydown={handleKeydown} on:click={handleClickOutside} />
+<svelte:window on:keydown={handleKeydown} />
 
 <main class={cn('min-w-96', 'font-sans bg-white text-slate-800', 'selection:bg-indigo-50 selection:text-indigo-900')}>
   <div class="mx-auto w-full max-w-md flex-col p-6 pb-3 space-y-2">
