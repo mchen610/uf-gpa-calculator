@@ -1,5 +1,4 @@
 import type { UnofficialTranscriptResponse } from '$shared/types'
-import type { Grade } from './grades'
 
 export type TranscriptCache = {
   transcript: UnofficialTranscriptResponse
@@ -7,13 +6,13 @@ export type TranscriptCache = {
 }
 
 export type LocalState = {
-  grades: Record<string, Grade>
+  rawUserInputs: Record<string, string | undefined>
   lastFocusedCourseId: 'unset' | string
   transcriptCache: TranscriptCache | Record<string, never>
 }
 
 const DEFAULT_STATE: LocalState = {
-  grades: {},
+  rawUserInputs: {},
   lastFocusedCourseId: 'unset',
   transcriptCache: {},
 }

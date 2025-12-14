@@ -161,19 +161,13 @@
       pendingCourses = pendingCourses.map((c) => (c.code === courseId ? { ...c, grade: normalized } : c))
     }
 
-    const grades: Record<string, Grade> = {}
-    for (const course of pendingCourses) {
-      if (course.grade) {
-        grades[course.code] = course.grade
-      }
-    }
-    saveLocalState({ grades, lastFocusedCourseId: courseId })
+    saveLocalState({ rawUserInputs, lastFocusedCourseId: sanitized ? courseId : 'unset' })
   }
 
   function clearAllInputs(): void {
     rawUserInputs = {}
     pendingCourses = pendingCourses.map((c) => ({ ...c, grade: undefined }))
-    saveLocalState({ grades: {}, lastFocusedCourseId: 'unset' })
+    saveLocalState({ rawUserInputs: {}, lastFocusedCourseId: 'unset' })
   }
 
   async function fetchSnapshot(): Promise<void> {
@@ -204,9 +198,12 @@
     const { gradePoints, creditHours, term, level } = data
     current = { gradePoints, creditHours, term, level }
 
-    const { grades, lastFocusedCourseId } = await loadLocalState()
-    pendingCourses = data.pendingCourses.map((course) => ({ ...course, grade: grades[course.code] }))
-    rawUserInputs = grades
+    const { rawUserInputs: savedInputs, lastFocusedCourseId } = await loadLocalState()
+    pendingCourses = data.pendingCourses.map((course) => ({
+      ...course,
+      grade: normalizeGradeInput(savedInputs[course.code] ?? ''),
+    }))
+    rawUserInputs = savedInputs
 
     await tick()
 
