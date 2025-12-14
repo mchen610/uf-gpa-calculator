@@ -357,12 +357,7 @@
 
               {#if showOptions}
                 <div class="absolute right-0 top-full z-10 pt-0.5">
-                  <div
-                    class={cn(
-                      'flex flex-col gap-2 p-2',
-                      'bg-white shadow-lg border border-slate-100 rounded-md',
-                    )}
-                  >
+                  <div class={cn('flex flex-col gap-2 p-2', 'bg-white shadow-lg border border-slate-100 rounded-md')}>
                     <label
                       class="flex items-center gap-1 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer text-nowrap"
                     >
@@ -425,9 +420,14 @@
                     on:keydown={(event) => handleInputKeydown(event, index, course.code)}
                     maxlength="2"
                   />
-                  {#if advancedMode && course.grade}
-                    <span class="absolute -bottom-4 left-1/2 -translate-x-1/2 text-xxs tabular-nums text-blue-400">
-                      {GRADE_POINTS[course.grade].toFixed(2)}
+                  {#if advancedMode}
+                    <span
+                      class={cn(
+                        'absolute -bottom-4 left-1/2 -translate-x-1/2 text-xxs tabular-nums text-blue-400',
+                        course.grade ? 'text-blue-400' : 'text-slate-400',
+                      )}
+                    >
+                      {course.grade ? GRADE_POINTS[course.grade].toFixed(2) : '0.00'}
                     </span>
                   {/if}
                 </div>
