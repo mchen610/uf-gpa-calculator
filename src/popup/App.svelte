@@ -257,19 +257,29 @@
       <div class="h-28 flex flex-col items-center justify-center text-center">
         <div class="flex flex-col items-center gap-3">
           <div class="h-5 w-5 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-600"></div>
-          <p class="text-xs text-slate-500">loading transcript from uf...</p>
+          <p class="text-xs text-slate-500">loading transcript from one.uf...</p>
         </div>
       </div>
     {:else if current === undefined}
       <div class="h-28 flex flex-col items-center justify-center text-center">
         <div class="flex items-center gap-1">
-          <p class="text-xs text-slate-500">navigate to</p>
-          <a
-            href="https://one.uf.edu"
-            target="_blank"
-            class="text-xs font-medium text-slate-500 underline decoration-slate-400 hover:text-slate-700">one.uf.edu</a
-          >
-          <p class="text-xs text-slate-500">to use.</p>
+          {#if isOnUfWebsite}
+            <a
+              href="https://one.uf.edu/shib/login"
+              target="_blank"
+              class="text-xs font-medium text-slate-500 underline decoration-slate-400 hover:text-slate-700"
+              >log into one.uf</a
+            >
+          {:else}
+            <p class="text-xs text-slate-500">go to</p>
+            <a
+              href="https://one.uf.edu"
+              target="_blank"
+              class="text-xs font-medium text-slate-500 underline decoration-slate-400 hover:text-slate-700"
+              >one.uf.edu</a
+            >
+            <p class="text-xs text-slate-500">to use.</p>
+          {/if}
         </div>
       </div>
     {:else}
