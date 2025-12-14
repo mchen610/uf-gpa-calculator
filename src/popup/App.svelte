@@ -407,9 +407,9 @@
                     'w-8 h-7 rounded-md',
                     'transition-all duration-150',
                     inputState === 'empty' && 'border border-slate-300',
-                    inputState === 'valid' && 'border border-indigo-200 bg-indigo-50',
+                    inputState === 'valid' && 'border border-blue-200 bg-blue-50',
                     inputState === 'invalid' && 'border border-slate-300',
-                    doAllAtOnce && 'group-focus-within:border-indigo-300',
+                    doAllAtOnce && 'group-focus-within:border-blue-300',
                   )}
                 >
                   <input
@@ -418,9 +418,9 @@
                       'w-full h-full rounded-md',
                       'text-center text-sm',
                       'bg-transparent outline-none',
-                      inputState === 'valid' && 'text-indigo-600 font-medium',
+                      inputState === 'valid' && 'text-blue-600 font-medium',
                       inputState === 'invalid' && 'text-slate-400 font-normal',
-                      'focus:ring-2 focus:ring-indigo-500/20 focus:ring-offset-0',
+                      'focus:ring-2 focus:ring-blue-500/20 focus:ring-offset-0',
                     )}
                     type="text"
                     value={rawUserInputs[course.code] ?? ''}
