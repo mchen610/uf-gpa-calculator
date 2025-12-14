@@ -434,7 +434,6 @@
                     <span class="text-xs text-slate-700">{course.title}</span>
                     {#if advancedMode}
                       <span class="text-xxs text-slate-400">{course.code}</span>
-                    {/if}
                   </p>
                   <p class="text-xs text-slate-400">{course.credits} credits</p>
                 </div>
