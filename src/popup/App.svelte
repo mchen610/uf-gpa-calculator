@@ -9,15 +9,13 @@
   import { typedKeys } from '$shared/typeUtils'
   import { X, Settings2, RotateCcw } from 'lucide-svelte'
 
-  const ALL_POSSIBLE_GRADES = ['', ...typedKeys(GRADE_POINTS)]
-  const GRADES_WITHOUT_PLUSES_OR_MINUSES = ALL_POSSIBLE_GRADES.filter((g) => g.length <= 1)
+  const VALID_GRADES = ['', ...typedKeys(GRADE_POINTS)]
 
   let current: Omit<DegreeSnapshot, 'pendingCourses'> | undefined = undefined
   let pendingCourses: PendingCourse[] = []
 
   let rawUserInputs: Record<string, string | undefined> = {}
 
-  let skipPlusOrMinusGrades = false
   let doAllAtOnce = false
   let advancedMode = false
   let showOptions = false
@@ -68,18 +66,17 @@
 
   function handleHorizontalNavigation(event: KeyboardEvent, courseId: string) {
     event.preventDefault()
-    const grades = skipPlusOrMinusGrades ? GRADES_WITHOUT_PLUSES_OR_MINUSES : ALL_POSSIBLE_GRADES
-    const idx = grades.indexOf(rawUserInputs[courseId] ?? '')
+    const idx = VALID_GRADES.indexOf(rawUserInputs[courseId] ?? '')
 
     let nextGrade: string | undefined
     if (event.key === 'ArrowLeft' && idx === 0) {
-      nextGrade = grades[grades.length - 1]
+      nextGrade = VALID_GRADES[VALID_GRADES.length - 1]
     } else if (event.key === 'ArrowLeft' && idx > 0) {
-      nextGrade = grades[idx - 1]
-    } else if (event.key === 'ArrowRight' && idx === grades.length - 1) {
-      nextGrade = grades[0]
-    } else if (event.key === 'ArrowRight' && idx < grades.length - 1) {
-      nextGrade = grades[idx + 1]
+      nextGrade = VALID_GRADES[idx - 1]
+    } else if (event.key === 'ArrowRight' && idx === VALID_GRADES.length - 1) {
+      nextGrade = VALID_GRADES[0]
+    } else if (event.key === 'ArrowRight' && idx < VALID_GRADES.length - 1) {
+      nextGrade = VALID_GRADES[idx + 1]
     } else {
       return
     }
@@ -366,16 +363,6 @@
                       'bg-white shadow-lg border border-slate-100 rounded-md',
                     )}
                   >
-                    <label
-                      class="flex items-center gap-2 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer"
-                    >
-                      <input
-                        type="checkbox"
-                        bind:checked={skipPlusOrMinusGrades}
-                        class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-3 w-3 cursor-pointer"
-                      />
-                      skip +/- grades
-                    </label>
                     <label
                       class="flex items-center gap-2 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer"
                     >
