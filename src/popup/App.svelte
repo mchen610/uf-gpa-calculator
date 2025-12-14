@@ -243,12 +243,12 @@
 <main class={cn('min-w-96', 'font-sans bg-white text-slate-800', 'selection:bg-indigo-50 selection:text-indigo-900')}>
   <div class="mx-auto w-full max-w-md flex-col p-6 pb-3 space-y-2">
     <header class="flex flex-col gap-1 mb-4">
-      <div class="flex items-center justify-between">
+      <div class="group/header flex items-center justify-between">
         <span class="text-sm font-medium text-slate-700">one.uf gpa calculator</span>
         <button
           on:click={handleRefresh}
           disabled={!isOnUfWebsite || isLoadingTranscript}
-          class="text-slate-400 disabled:cursor-not-allowed"
+          class="text-slate-400 disabled:cursor-not-allowed opacity-0 group-hover/header:opacity-100 transition-opacity"
           title={isOnUfWebsite ? 'Refresh transcript' : 'Navigate to one.uf.edu to refresh'}
         >
           <RotateCcw size={14} />
