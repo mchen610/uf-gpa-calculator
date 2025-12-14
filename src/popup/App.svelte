@@ -179,11 +179,11 @@
   async function fetchSnapshot(): Promise<void> {
     const snapshot = await getDegreeSnapshot()
 
+    isLoadingTranscript = false
+
     if (snapshot) {
       await applySnapshot(snapshot)
     }
-
-    isLoadingTranscript = false
   }
 
   async function handleRefresh(): Promise<void> {
@@ -193,11 +193,11 @@
 
     const snapshot = await refreshDegreeSnapshot()
 
+    isLoadingTranscript = false
+
     if (snapshot) {
       await applySnapshot(snapshot)
     }
-
-    isLoadingTranscript = false
   }
 
   async function applySnapshot(data: DegreeSnapshot): Promise<void> {
