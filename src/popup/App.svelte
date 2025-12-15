@@ -246,12 +246,15 @@
     {:else if current === undefined}
       <div class="h-28 flex flex-col items-center justify-center text-center">
         <div class="flex items-center gap-1">
+          you need to
           <a
             href="https://one.uf.edu/shib/login"
             target="_blank"
             class="text-xs font-medium text-slate-500 underline decoration-slate-400 hover:text-slate-700"
-            >log into one.uf</a
           >
+            log back in to one.uf
+          </a>
+          to refresh.
         </div>
       </div>
     {:else}
