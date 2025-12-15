@@ -7,7 +7,7 @@
   import { round } from '$shared/utils'
   import { cn } from './lib/utils'
   import { typedKeys } from '$shared/typeUtils'
-  import { X, Settings2, RotateCcw } from 'lucide-svelte'
+  import { X, RotateCcw, ChevronDown } from 'lucide-svelte'
 
   const VALID_GRADES = ['', ...typedKeys(GRADE_POINTS)]
 
@@ -16,7 +16,7 @@
 
   let rawUserInputs: Record<string, string | undefined> = {}
 
-  let fillAllAtOnce = false
+  let selectAll = false
   let advancedMode = false
   let showOptions = false
   let anyGradeInputFocused = false
@@ -141,7 +141,7 @@
   }
 
   function handleBatchFillChange() {
-    if (fillAllAtOnce) {
+    if (selectAll) {
       focusFirstInput()
     }
   }
@@ -150,7 +150,7 @@
     const sanitized = value.trim().toUpperCase()
     const normalized = normalizeGradeInput(sanitized)
 
-    if (fillAllAtOnce) {
+    if (selectAll) {
       const newInputs = { ...rawUserInputs }
       for (const course of pendingCourses) {
         newInputs[course.id] = sanitized
@@ -237,14 +237,6 @@
     <header class="flex flex-col gap-1 mb-4">
       <div class="group/header flex items-center justify-between">
         <span class="text-sm font-medium text-slate-700">one.uf gpa calculator</span>
-        <button
-          on:click={handleRefresh}
-          disabled={!isOnUfWebsite || isLoadingTranscript}
-          class="text-slate-400 disabled:cursor-not-allowed opacity-0 hover:opacity-100 transition-opacity"
-          title={isOnUfWebsite ? 'Refresh transcript' : 'Navigate to one.uf.edu to refresh'}
-        >
-          <RotateCcw size={14} />
-        </button>
       </div>
       {#if current !== undefined}
         <p class="text-xs text-slate-400">type a grade (A, B+, C...) or use arrow keys to navigate.</p>
@@ -309,7 +301,7 @@
       </div>
 
       <section>
-        <div class="flex items-end justify-between mb-2">
+        <div class="flex items-start justify-between mb-2">
           <div>
             <p class="text-xs text-indigo-400 mb-0.5">projected gpa</p>
             <p>
@@ -333,57 +325,68 @@
             </p>
           </div>
 
-          <div class="flex flex-col items-end gap-1">
+          <div
+            class="relative"
+            role="group"
+            on:mouseenter={() => (showOptions = true)}
+            on:mouseleave={() => (showOptions = false)}
+          >
             <button
-              on:click={clearAllInputs}
               tabindex="-1"
-              class="text-xs text-slate-400 hover:text-slate-600 transition-colors tracking-wide flex items-center gap-0.5"
+              class={cn(
+                'text-xs text-slate-600 hover:text-black transition-colors tracking-wide',
+                'flex items-center gap-0.5',
+              )}
             >
-              clear all
-              <X size={12} strokeWidth={2} />
+            options
+            <ChevronDown size={12} strokeWidth={2} />
             </button>
-            <div
-              class="relative options-container"
-              role="group"
-              on:mouseenter={() => (showOptions = true)}
-              on:mouseleave={() => (showOptions = false)}
-            >
-              <button
-                tabindex="-1"
-                class="text-xs text-slate-600 hover:text-black transition-colors tracking-wide flex items-center gap-0.5"
-              >
-                options
-                <Settings2 size={12} strokeWidth={2} />
-              </button>
 
-              {#if showOptions}
-                <div class="absolute right-0 top-full z-10 pt-0.5">
-                  <div class={cn('flex flex-col gap-2 p-2', 'bg-white shadow-lg border border-slate-100 rounded-md')}>
-                    <label
-                      class="flex items-center gap-1 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer text-nowrap"
-                    >
-                      <input
-                        type="checkbox"
-                        bind:checked={fillAllAtOnce}
-                        on:change={handleBatchFillChange}
-                        class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-3 w-3 cursor-pointer"
-                      />
-                      fill all at once
-                    </label>
-                    <label
-                      class="flex items-center gap-1 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer text-nowrap"
-                    >
-                      <input
-                        type="checkbox"
-                        bind:checked={advancedMode}
-                        class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-3 w-3 cursor-pointer"
-                      />
-                      show details
-                    </label>
-                  </div>
+            {#if showOptions}
+              <div class="absolute right-0 top-full z-10 pt-0.5">
+                <div class={cn('flex flex-col gap-2 p-2', 'bg-white shadow-lg border border-slate-100 rounded-md')}>
+                  <label
+                    class="flex items-center gap-1.5 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer text-nowrap"
+                  >
+                    <input
+                      type="checkbox"
+                      bind:checked={advancedMode}
+                      class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-3 w-3 cursor-pointer"
+                    />
+                    show details
+                  </label>
+                  <label
+                    class="flex items-center gap-1.5 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer text-nowrap"
+                  >
+                    <input
+                      type="checkbox"
+                      bind:checked={selectAll}
+                      on:change={handleBatchFillChange}
+                      class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-3 w-3 cursor-pointer"
+                    />
+                    select all
+                  </label>
+                  <div class="h-px bg-gradient-to-r from-slate-100 via-slate-100 to-transparent via-80% -my-0.5"></div>
+                  <button
+                    on:click={clearAllInputs}
+                    tabindex="-1"
+                    class="flex items-center gap-1 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer text-nowrap"
+                  >
+                    <X size={12} strokeWidth={2} />
+                    clear all
+                  </button>
+                  <button
+                    on:click={handleRefresh}
+                    disabled={!isOnUfWebsite || isLoadingTranscript}
+                    tabindex="-1"
+                    class="flex items-center gap-1 text-xxs text-slate-400 hover:text-slate-600 disabled:hover:text-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors tracking-wide cursor-pointer text-nowrap"
+                  >
+                    <RotateCcw size={12} strokeWidth={2} />
+                    refresh
+                  </button>
                 </div>
-              {/if}
-            </div>
+              </div>
+            {/if}
           </div>
         </div>
 
@@ -404,7 +407,7 @@
                       inputState === 'empty' && 'border border-slate-300 bg-transparent',
                       inputState === 'valid' && 'border border-blue-200 bg-blue-50 text-blue-600 font-medium',
                       inputState === 'invalid' && 'border border-slate-300 bg-transparent text-slate-400',
-                      fillAllAtOnce && anyGradeInputFocused && 'border-purple-300 ring-1 ring-purple-300/20',
+                      selectAll && anyGradeInputFocused && 'border-purple-300 ring-1 ring-purple-300/20',
                     )}
                     type="text"
                     value={rawUserInputs[course.id] ?? ''}
