@@ -281,7 +281,7 @@
         <div>
           <p class="text-xs text-slate-400 mb-0.5">current gpa</p>
           <p>
-            <span class="text-sm text-slate-900">
+            <span class="text-sm text-slate-700">
               {round(current.gradePoints / current.creditHours)}
             </span>
             {#if advancedMode}
