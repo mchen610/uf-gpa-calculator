@@ -47,11 +47,16 @@ function parseTranscriptToSnapshot(transcript: UnofficialTranscriptResponse): De
   if (!currentTerm) return undefined
 
   const pendingCourses: PendingCourse[] = currentTerm.creditSources
+    /**
+     * 'ENRL' means the course is being taken at UF
+     */
     .filter((src) => src.sourceType === 'ENRL')
     .flatMap((src) => src.sessions)
     .flatMap((session) => session.courses)
     .filter((course) => course.grade === '')
+    .filter((course) => course.classNumber !== '')
     .map((course) => ({
+      id: Number(course.classNumber),
       code: `${course.subject}${course.catalogNumber}`,
       title: course.title,
       credits: course.hoursCarried,

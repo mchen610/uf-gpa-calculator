@@ -6,8 +6,8 @@ export type TranscriptCache = {
 }
 
 export type LocalState = {
-  rawUserInputs: Record<string, string | undefined>
-  lastFocusedCourseId: 'unset' | string
+  rawUserInputs: Record<number, string | undefined>
+  lastFocusedCourseId: 'unset' | number
   transcriptCache: TranscriptCache | Record<string, never>
 }
 

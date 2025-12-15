@@ -42,3 +42,4 @@ export function computeProjection(courses: PendingCourse[]): ProjectionDetails {
   }
 }
 
+

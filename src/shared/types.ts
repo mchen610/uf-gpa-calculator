@@ -1,6 +1,7 @@
 import type { Grade } from 'src/popup/lib/grades'
 
 export interface PendingCourse {
+  id: number
   code: string
   title: string
   credits: number

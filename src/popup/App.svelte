@@ -36,7 +36,7 @@
 
   type InputState = 'empty' | 'valid' | 'invalid'
 
-  function getInputState(courseId: string): InputState {
+  function getInputState(courseId: number): InputState {
     const raw = rawUserInputs[courseId]
     if (!raw) return 'empty'
     return isValidGrade(raw) ? 'valid' : 'invalid'
@@ -64,7 +64,7 @@
     focusInput(nextIndex)
   }
 
-  function handleHorizontalNavigation(event: KeyboardEvent, courseId: string) {
+  function handleHorizontalNavigation(event: KeyboardEvent, courseId: number) {
     event.preventDefault()
     const idx = VALID_GRADES.indexOf(rawUserInputs[courseId] ?? '')
 
@@ -83,7 +83,7 @@
     setGradeInput(courseId, nextGrade)
   }
 
-  function handleInputKeydown(event: KeyboardEvent, index: number, courseId: string) {
+  function handleInputKeydown(event: KeyboardEvent, index: number, courseId: number) {
     if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
       handleVerticalNavigation(event, index)
     } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
@@ -127,7 +127,7 @@
     }
     if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
       focusInput(0)
-      handleHorizontalNavigation(event, pendingCourses[0].code)
+      handleHorizontalNavigation(event, pendingCourses[0].id)
       return
     }
 
@@ -142,14 +142,14 @@
     }
   }
 
-  function setGradeInput(courseId: string, value: string): void {
+  function setGradeInput(courseId: number, value: string): void {
     const sanitized = value.trim().toUpperCase()
     const normalized = normalizeGradeInput(sanitized)
 
     if (fillAllAtOnce) {
       const newInputs = { ...rawUserInputs }
       for (const course of pendingCourses) {
-        newInputs[course.code] = sanitized
+        newInputs[course.id] = sanitized
       }
       rawUserInputs = newInputs
       pendingCourses = pendingCourses.map((c) => ({ ...c, grade: normalized }))
@@ -158,7 +158,7 @@
         ...rawUserInputs,
         [courseId]: sanitized,
       }
-      pendingCourses = pendingCourses.map((c) => (c.code === courseId ? { ...c, grade: normalized } : c))
+      pendingCourses = pendingCourses.map((c) => (c.id === courseId ? { ...c, grade: normalized } : c))
     }
 
     saveLocalState({ rawUserInputs, lastFocusedCourseId: sanitized ? courseId : 'unset' })
@@ -201,13 +201,13 @@
     const { rawUserInputs: savedInputs, lastFocusedCourseId } = await loadLocalState()
     pendingCourses = data.pendingCourses.map((course) => ({
       ...course,
-      grade: normalizeGradeInput(savedInputs[course.code] ?? ''),
+      grade: normalizeGradeInput(savedInputs[course.id] ?? ''),
     }))
     rawUserInputs = savedInputs
 
     await tick()
 
-    const lastFocusedIndex = pendingCourses.findIndex((c) => c.code === lastFocusedCourseId)
+    const lastFocusedIndex = pendingCourses.findIndex((c) => c.id === lastFocusedCourseId)
     if (lastFocusedIndex === -1) {
       focusInput(0)
     } else {
@@ -388,7 +388,7 @@
         {:else}
           <ul class="flex flex-col gap-0.5 group">
             {#each pendingCourses as course, index}
-              {@const inputState = getInputState(course.code)}
+              {@const inputState = getInputState(course.id)}
               <li class="flex items-center gap-3 py-1.5">
                 <div
                   class={cn(
@@ -412,9 +412,9 @@
                       'focus:ring-2 focus:ring-blue-500/20 focus:ring-offset-0',
                     )}
                     type="text"
-                    value={rawUserInputs[course.code] ?? ''}
-                    on:input={(event) => setGradeInput(course.code, event.currentTarget.value)}
-                    on:keydown={(event) => handleInputKeydown(event, index, course.code)}
+                    value={rawUserInputs[course.id] ?? ''}
+                    on:input={(event) => setGradeInput(course.id, event.currentTarget.value)}
+                    on:keydown={(event) => handleInputKeydown(event, index, course.id)}
                     maxlength="2"
                   />
                   {#if advancedMode}
