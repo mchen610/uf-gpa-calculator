@@ -52,35 +52,38 @@
 
   function handleVerticalNavigation(event: KeyboardEvent, index: number) {
     event.preventDefault()
-    const isDown = event.key === 'ArrowDown'
-    let nextIndex = isDown ? index + 1 : index - 1
-
-    if (nextIndex < 0) {
-      nextIndex = pendingCourses.length - 1
-    } else if (nextIndex >= pendingCourses.length) {
-      nextIndex = 0
-    }
-
-    focusInput(nextIndex)
-  }
-
-  function handleHorizontalNavigation(event: KeyboardEvent, courseId: number) {
-    event.preventDefault()
-    const idx = VALID_GRADES.indexOf(rawUserInputs[courseId] ?? '')
-
     let nextIndex: number | undefined
-
-    if (idx === -1) {
-      nextIndex = 0
-    } else if (event.key === 'ArrowLeft') {
-      nextIndex = idx - 1
-    } else if (event.key === 'ArrowRight') {
-      nextIndex = idx + 1
+    if (event.key === 'ArrowDown') {
+      nextIndex = index + 1
+    } else if (event.key === 'ArrowUp') {
+      nextIndex = index - 1
     } else {
       throw new Error(`Unexpected keyboard event ${event.key}`)
     }
 
-    setGradeInput(courseId, VALID_GRADES[(nextIndex + VALID_GRADES.length) % VALID_GRADES.length])
+    const normalizedIndex = (nextIndex + pendingCourses.length) % pendingCourses.length
+
+    focusInput(normalizedIndex)
+  }
+
+  function handleHorizontalNavigation(event: KeyboardEvent, courseId: number) {
+    event.preventDefault()
+    const currentIndex = VALID_GRADES.indexOf(rawUserInputs[courseId] ?? '')
+
+    let nextIndex: number | undefined
+
+    if (currentIndex === -1) {
+      nextIndex = 0
+    } else if (event.key === 'ArrowLeft') {
+      nextIndex = currentIndex - 1
+    } else if (event.key === 'ArrowRight') {
+      nextIndex = currentIndex + 1
+    } else {
+      throw new Error(`Unexpected keyboard event ${event.key}`)
+    }
+
+    const normalizedIndex = (nextIndex + VALID_GRADES.length) % VALID_GRADES.length
+    setGradeInput(courseId, VALID_GRADES[normalizedIndex])
   }
 
   function handleInputKeydown(event: KeyboardEvent, index: number, courseId: number) {
