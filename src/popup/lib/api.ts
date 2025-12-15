@@ -38,6 +38,33 @@ export async function getUnofficialTranscript(): Promise<UnofficialTranscriptRes
   return fresh
 }
 
+/**
+ * ufHoursCarried randomly includes pending credit hours near the end of the semester.
+ * We check which option (with or without pending) produces a GPA closer to the actual ufGpa.
+ */
+function calculateCreditHours({
+  gradePoints,
+  ufHoursCarried,
+  pendingCreditHours,
+  ufGpa,
+}: {
+  gradePoints: number
+  ufHoursCarried: number
+  pendingCreditHours: number
+  ufGpa: number
+}): number {
+  const withPending = ufHoursCarried
+  const withoutPending = ufHoursCarried - pendingCreditHours
+
+  const gpaWithPending = gradePoints / withPending
+  const gpaWithoutPending = gradePoints / withoutPending
+
+  const diffWithPending = Math.abs(gpaWithPending - ufGpa)
+  const diffWithoutPending = Math.abs(gpaWithoutPending - ufGpa)
+
+  return diffWithPending < diffWithoutPending ? withPending : withoutPending
+}
+
 function parseTranscriptToSnapshot(transcript: UnofficialTranscriptResponse): DegreeSnapshot | undefined {
   const records = Object.values(transcript.records).filter((r) => r !== undefined)
   const record = records.sort((a, b) => (b.terms.at(-1)?.termCode ?? 0) - (a.terms.at(-1)?.termCode ?? 0))[0]
@@ -64,10 +91,19 @@ function parseTranscriptToSnapshot(transcript: UnofficialTranscriptResponse): De
     }))
 
   const pendingCreditHours = sum(pendingCourses, (course) => course.credits)
+  const gradePoints = parseFloat(record.gradePointsEarned)
+  const ufHoursCarried = parseFloat(record.ufHoursCarried)
+  const ufGpa = parseFloat(record.ufGpa)
+  const creditHours = calculateCreditHours({
+    pendingCreditHours,
+    gradePoints,
+    ufHoursCarried,
+    ufGpa,
+  })
 
   return {
-    gradePoints: parseFloat(record.gradePointsEarned),
-    creditHours: parseFloat(record.ufHoursCarried) - pendingCreditHours,
+    gradePoints,
+    creditHours,
     term: currentTerm.termDescription,
     level: currentTerm.level,
     pendingCourses,
