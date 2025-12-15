@@ -418,7 +418,7 @@
                     </span>
                   {/if}
                 </div>
-                <div class="flex flex-col">
+                <div class="flex flex-col leading-tight">
                   <p>
                     <span class="text-xs text-slate-700">{course.title}</span>
                     <span class="text-xxs text-slate-400">{course.code}</span>
