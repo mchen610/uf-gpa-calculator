@@ -68,19 +68,19 @@
     event.preventDefault()
     const idx = VALID_GRADES.indexOf(rawUserInputs[courseId] ?? '')
 
-    let nextGrade: string | undefined
-    if (event.key === 'ArrowLeft' && idx === 0) {
-      nextGrade = VALID_GRADES[VALID_GRADES.length - 1]
-    } else if (event.key === 'ArrowLeft' && idx > 0) {
-      nextGrade = VALID_GRADES[idx - 1]
-    } else if (event.key === 'ArrowRight' && idx === VALID_GRADES.length - 1) {
-      nextGrade = VALID_GRADES[0]
-    } else if (event.key === 'ArrowRight' && idx < VALID_GRADES.length - 1) {
-      nextGrade = VALID_GRADES[idx + 1]
+    let nextIndex: number | undefined
+
+    if (idx === -1) {
+      nextIndex = 0
+    } else if (event.key === 'ArrowLeft') {
+      nextIndex = idx - 1
+    } else if (event.key === 'ArrowRight') {
+      nextIndex = idx + 1
     } else {
-      return
+      throw new Error(`Unexpected keyboard event ${event.key}`)
     }
-    setGradeInput(courseId, nextGrade)
+
+    setGradeInput(courseId, VALID_GRADES[(nextIndex + VALID_GRADES.length) % VALID_GRADES.length])
   }
 
   function handleInputKeydown(event: KeyboardEvent, index: number, courseId: number) {
