@@ -1,6 +1,6 @@
 import type { DegreeSnapshot, PendingCourse, UnofficialTranscriptResponse } from '$shared/types'
 import { sum } from '$shared/utils'
-import { normalizeGradeInput } from './grades'
+import { GRADES_THAT_COUNT, GRADE_POINTS, normalizeGradeInput, type Grade } from './grades'
 import { loadLocalState, saveLocalState } from './storage'
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000
@@ -41,33 +41,6 @@ export async function getUnofficialTranscript(): Promise<UnofficialTranscriptRes
   return fresh
 }
 
-/**
- * ufHoursCarried randomly includes pending credit hours near the end of the semester.
- * We check which option (with or without pending) produces a GPA closer to the actual ufGpa.
- */
-function calculateCreditHours({
-  gradePoints,
-  ufHoursCarried,
-  pendingCreditHours,
-  ufGpa,
-}: {
-  gradePoints: number
-  ufHoursCarried: number
-  pendingCreditHours: number
-  ufGpa: number
-}): number {
-  const withPending = ufHoursCarried
-  const withoutPending = ufHoursCarried - pendingCreditHours
-
-  const gpaWithPending = gradePoints / withPending
-  const gpaWithoutPending = gradePoints / withoutPending
-
-  const diffWithPending = Math.abs(gpaWithPending - ufGpa)
-  const diffWithoutPending = Math.abs(gpaWithoutPending - ufGpa)
-
-  return diffWithPending < diffWithoutPending ? withPending : withoutPending
-}
-
 function parseTranscriptToSnapshot(transcript: UnofficialTranscriptResponse): DegreeSnapshot | undefined {
   const records = Object.values(transcript.records).filter((r) => r !== undefined)
   const record = records.sort((a, b) => (b.terms.at(-1)?.termCode ?? 0) - (a.terms.at(-1)?.termCode ?? 0))[0]
@@ -76,10 +49,23 @@ function parseTranscriptToSnapshot(transcript: UnofficialTranscriptResponse): De
   const currentTerm = record.terms.at(-1)
   if (!currentTerm) return undefined
 
+  /**
+   * Calculate totals from all UF courses (ENRL) across past terms.
+   * For past terms, use hoursCarried since that's what actually counted toward GPA.
+   */
+  const pastCourses = record.terms
+    .slice(0, -1)
+    .flatMap((term) => term.creditSources)
+    .filter((src) => src.sourceType === 'ENRL')
+    .flatMap((src) => src.sessions)
+    .flatMap((session) => session.courses)
+    .map((course) => ({ grade: normalizeGradeInput(course.grade), hours: course.hoursCarried }))
+    .filter((c): c is { grade: Grade; hours: number } => c.grade !== undefined && c.grade in GRADES_THAT_COUNT)
+
+  const gradePoints = sum(pastCourses, (c) => GRADE_POINTS[c.grade] * c.hours)
+  const creditHours = sum(pastCourses, (c) => c.hours)
+
   const pendingCourses: PendingCourse[] = currentTerm.creditSources
-    /**
-     * 'ENRL' means the course is being taken at UF
-     */
     .filter((src) => src.sourceType === 'ENRL')
     .flatMap((src) => src.sessions)
     .flatMap((session) => session.courses)
@@ -88,20 +74,14 @@ function parseTranscriptToSnapshot(transcript: UnofficialTranscriptResponse): De
       id: Number(course.classNumber),
       code: `${course.subject}${course.catalogNumber}`,
       title: course.title,
+      /**
+       * Use `credits` instead of `hoursCarried` for current term courses.
+       * For grades like I*, hoursCarried becomes 0, but we still want to
+       * show the course and let users project what-if scenarios with different grades.
+       */
       credits: Number(course.credits),
       grade: normalizeGradeInput(course.grade),
     }))
-
-  const pendingCreditHours = sum(pendingCourses, (course) => course.credits)
-  const gradePoints = parseFloat(record.gradePointsEarned)
-  const ufHoursCarried = parseFloat(record.ufHoursCarried)
-  const ufGpa = parseFloat(record.ufGpa)
-  const creditHours = calculateCreditHours({
-    pendingCreditHours,
-    gradePoints,
-    ufHoursCarried,
-    ufGpa,
-  })
 
   return {
     gradePoints,

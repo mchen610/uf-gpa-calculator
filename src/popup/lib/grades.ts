@@ -5,7 +5,7 @@ import type { PendingCourse, ProjectionDetails } from '$shared/types'
 /**
  * https://catalog.ufl.edu/UGRD/academic-regulations/grades-grading-policies/
  */
-const GRADES_THAT_COUNT = {
+export const GRADES_THAT_COUNT = {
   // Passing
   A: 4.0,
   'A-': 3.67,
