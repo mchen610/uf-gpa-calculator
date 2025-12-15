@@ -8,6 +8,9 @@ import autoprefixer from 'autoprefixer'
 import manifest from './src/manifest.json'
 
 export default defineConfig({
+  build: {
+    sourcemap: true,
+  },
   plugins: [
     svelte({
       preprocess: [vitePreprocess()],
