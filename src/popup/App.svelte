@@ -390,26 +390,16 @@
             {#each pendingCourses as course, index}
               {@const inputState = getInputState(course.id)}
               <li class="flex items-center gap-3 py-1.5">
-                <div
-                  class={cn(
-                    'relative flex items-center justify-center',
-                    'w-8 h-7 rounded-md',
-                    'transition-all duration-150',
-                    inputState === 'empty' && 'border border-slate-300',
-                    inputState === 'valid' && 'border border-blue-200 bg-blue-50',
-                    inputState === 'invalid' && 'border border-slate-300',
-                    fillAllAtOnce && 'group-focus-within:border-blue-300',
-                  )}
-                >
+                <div class="relative">
                   <input
                     id={getInputElementId(index)}
                     class={cn(
-                      'w-full h-full rounded-md',
+                      'w-8 h-7 rounded-md',
                       'text-center text-sm',
-                      'bg-transparent outline-none',
-                      inputState === 'valid' && 'text-blue-600 font-medium',
-                      inputState === 'invalid' && 'text-slate-400 font-normal',
-                      'focus:ring-2 focus:ring-blue-500/20 focus:ring-offset-0',
+                      'outline-none focus:ring-1 focus:ring-blue-500/20',
+                      inputState === 'empty' && 'border border-slate-300 bg-transparent',
+                      inputState === 'valid' && 'border border-blue-200 bg-blue-50 text-blue-600 font-medium',
+                      inputState === 'invalid' && 'border border-slate-300 bg-transparent text-slate-400',
                     )}
                     type="text"
                     value={rawUserInputs[course.id] ?? ''}
