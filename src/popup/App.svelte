@@ -418,7 +418,7 @@
                     <span
                       class={cn(
                         'absolute -bottom-4 left-1/2 -translate-x-1/2 text-xxs tabular-nums',
-                        course.grade ? 'text-blue-400' : 'text-slate-400',
+                        course.grade ? 'text-blue-400' : 'text-slate-300',
                       )}
                     >
                       {course.grade ? GRADE_POINTS[course.grade].toFixed(2) : '0.00'}
