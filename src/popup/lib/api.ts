@@ -1,5 +1,6 @@
 import type { DegreeSnapshot, PendingCourse, UnofficialTranscriptResponse } from '$shared/types'
 import { sum } from '$shared/utils'
+import { normalizeGradeInput } from './grades'
 import { loadLocalState, saveLocalState } from './storage'
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000
@@ -82,14 +83,13 @@ function parseTranscriptToSnapshot(transcript: UnofficialTranscriptResponse): De
     .filter((src) => src.sourceType === 'ENRL')
     .flatMap((src) => src.sessions)
     .flatMap((session) => session.courses)
-    .filter((course) => course.grade === '')
     .filter((course) => course.classNumber !== '')
     .map((course) => ({
       id: Number(course.classNumber),
       code: `${course.subject}${course.catalogNumber}`,
       title: course.title,
       credits: course.hoursCarried,
-      grade: undefined,
+      grade: normalizeGradeInput(course.grade),
     }))
 
   const pendingCreditHours = sum(pendingCourses, (course) => course.credits)

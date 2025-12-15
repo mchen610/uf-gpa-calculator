@@ -204,9 +204,9 @@
     const { rawUserInputs: savedInputs, lastFocusedCourseId } = await loadLocalState()
     pendingCourses = data.pendingCourses.map((course) => ({
       ...course,
-      grade: normalizeGradeInput(savedInputs[course.id] ?? ''),
+      grade: course.grade ?? normalizeGradeInput(savedInputs[course.id] ?? ''),
     }))
-    rawUserInputs = savedInputs
+    rawUserInputs = Object.fromEntries(pendingCourses.map((c) => [c.id, c.grade]))
 
     await tick()
 
