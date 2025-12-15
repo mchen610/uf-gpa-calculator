@@ -248,7 +248,7 @@
       <div class="h-28 flex flex-col items-center justify-center text-center">
         <div class="flex flex-col items-center gap-3">
           <div class="h-5 w-5 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-600"></div>
-          <p class="text-xs text-slate-500">loading transcript from one.uf...</p>
+          <p class="text-xs text-slate-500">loading your transcript from one.uf...</p>
         </div>
       </div>
     {:else if current === undefined}
