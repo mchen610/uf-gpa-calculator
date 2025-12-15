@@ -420,7 +420,7 @@
                   {#if advancedMode}
                     <span
                       class={cn(
-                        'absolute -bottom-4 left-1/2 -translate-x-1/2 text-xxs tabular-nums text-blue-400',
+                        'absolute -bottom-4 left-1/2 -translate-x-1/2 text-xxs tabular-nums',
                         course.grade ? 'text-blue-400' : 'text-slate-400',
                       )}
                     >
