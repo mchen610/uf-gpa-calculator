@@ -19,6 +19,7 @@
   let fillAllAtOnce = false
   let advancedMode = false
   let showOptions = false
+  let anyGradeInputFocused = false
 
   let isLoadingTranscript = true
   let isOnUfWebsite = false
@@ -403,11 +404,14 @@
                       inputState === 'empty' && 'border border-slate-300 bg-transparent',
                       inputState === 'valid' && 'border border-blue-200 bg-blue-50 text-blue-600 font-medium',
                       inputState === 'invalid' && 'border border-slate-300 bg-transparent text-slate-400',
+                      fillAllAtOnce && anyGradeInputFocused && 'border-purple-300 ring-1 ring-purple-300/20',
                     )}
                     type="text"
                     value={rawUserInputs[course.id] ?? ''}
                     on:input={(event) => setGradeInput(course.id, event.currentTarget.value)}
                     on:keydown={(event) => handleInputKeydown(event, index, course.id)}
+                    on:focus={() => (anyGradeInputFocused = true)}
+                    on:blur={() => (anyGradeInputFocused = false)}
                     maxlength="2"
                   />
                   {#if advancedMode}
