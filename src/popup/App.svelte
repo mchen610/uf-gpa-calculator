@@ -191,6 +191,7 @@
     const snapshot = await refreshDegreeSnapshot()
 
     isLoadingTranscript = false
+    showOptions = false
 
     if (snapshot) {
       await applySnapshot(snapshot)
