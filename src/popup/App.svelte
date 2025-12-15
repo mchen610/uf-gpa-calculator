@@ -376,7 +376,17 @@
         </div>
 
         {#if pendingCourses.length === 0}
-          <div class="py-6 text-center text-xs text-slate-400">Sync with your UF grade summary to see classes.</div>
+          <div class="py-6 flex flex-col items-center gap-2 text-center">
+            <p class="text-xs text-slate-400">something went wrong.</p>
+            <button
+              on:click={handleRefresh}
+              disabled={isLoadingTranscript}
+              class="flex items-center gap-1 text-xs text-slate-400 hover:text-slate-600 disabled:hover:text-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+            >
+              <RotateCcw size={12} strokeWidth={2} />
+              please refresh
+            </button>
+          </div>
         {:else}
           <ul class="flex flex-col gap-0.5 group">
             {#each pendingCourses as course, index}
