@@ -88,7 +88,7 @@ function parseTranscriptToSnapshot(transcript: UnofficialTranscriptResponse): De
       id: Number(course.classNumber),
       code: `${course.subject}${course.catalogNumber}`,
       title: course.title,
-      credits: course.hoursCarried,
+      credits: Number(course.credits),
       grade: normalizeGradeInput(course.grade),
     }))
 

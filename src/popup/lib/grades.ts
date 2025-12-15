@@ -24,7 +24,7 @@ const GRADES_THAT_COUNT = {
   NG: 0.0,
 } as const
 
-const GRADES_THAT_DONT_COUNT = {
+export const GRADES_THAT_DONT_COUNT = {
   S: 0.0,
   U: 0.0,
   W: 0.0,

@@ -1,7 +1,14 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte'
   import type { DegreeSnapshot, PendingCourse, ProjectionDetails } from '$shared/types'
-  import { GRADE_POINTS, normalizeGradeInput, computeProjection, isValidGrade, type Grade } from './lib/grades'
+  import {
+    GRADE_POINTS,
+    normalizeGradeInput,
+    computeProjection,
+    isValidGrade,
+    type Grade,
+    GRADES_THAT_DONT_COUNT,
+  } from './lib/grades'
   import { getDegreeSnapshot, refreshDegreeSnapshot } from './lib/api'
   import { loadLocalState, saveLocalState } from './lib/storage'
   import { round } from '$shared/utils'
@@ -430,7 +437,7 @@
                     <span class="text-xxs text-slate-400">{course.code}</span>
                   </p>
                   <p class={cn('text-xs', inputState === 'valid' ? 'text-blue-400' : 'text-slate-400')}>
-                    {course.credits} credits
+                    {course.grade && course.grade in GRADES_THAT_DONT_COUNT ? 0 : course.credits} credits
                   </p>
                 </div>
               </li>
