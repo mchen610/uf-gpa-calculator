@@ -22,7 +22,6 @@
   let anyGradeInputFocused = false
 
   let isLoadingTranscript = true
-  let isOnUfWebsite = false
 
   let projection: ProjectionDetails = {
     addedGradePoints: 0,
@@ -219,13 +218,7 @@
     }
   }
 
-  async function checkIfOnOneUf(): Promise<void> {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
-    isOnUfWebsite = tab?.url?.includes('one.uf.edu') ?? false
-  }
-
   onMount(() => {
-    checkIfOnOneUf()
     fetchSnapshot()
   })
 </script>
@@ -253,23 +246,12 @@
     {:else if current === undefined}
       <div class="h-28 flex flex-col items-center justify-center text-center">
         <div class="flex items-center gap-1">
-          {#if isOnUfWebsite}
-            <a
-              href="https://one.uf.edu/shib/login"
-              target="_blank"
-              class="text-xs font-medium text-slate-500 underline decoration-slate-400 hover:text-slate-700"
-              >log into one.uf</a
-            >
-          {:else}
-            <p class="text-xs text-slate-500">go to</p>
-            <a
-              href="https://one.uf.edu"
-              target="_blank"
-              class="text-xs font-medium text-slate-500 underline decoration-slate-400 hover:text-slate-700"
-              >one.uf.edu</a
-            >
-            <p class="text-xs text-slate-500">to use.</p>
-          {/if}
+          <a
+            href="https://one.uf.edu/shib/login"
+            target="_blank"
+            class="text-xs font-medium text-slate-500 underline decoration-slate-400 hover:text-slate-700"
+            >log into one.uf</a
+          >
         </div>
       </div>
     {:else}
@@ -338,8 +320,8 @@
                 'flex items-center gap-0.5',
               )}
             >
-            options
-            <ChevronDown size={12} strokeWidth={2} />
+              options
+              <ChevronDown size={12} strokeWidth={2} />
             </button>
 
             {#if showOptions}
@@ -377,7 +359,7 @@
                   </button>
                   <button
                     on:click={handleRefresh}
-                    disabled={!isOnUfWebsite || isLoadingTranscript}
+                    disabled={isLoadingTranscript}
                     tabindex="-1"
                     class="flex items-center gap-1 text-xxs text-slate-400 hover:text-slate-600 disabled:hover:text-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors tracking-wide cursor-pointer text-nowrap"
                   >

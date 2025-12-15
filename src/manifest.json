@@ -17,17 +17,6 @@
   "host_permissions": [
     "https://one.uf.edu/*"
   ],
-  "content_scripts": [
-    {
-      "matches": [
-        "https://one.uf.edu/*"
-      ],
-      "js": [
-        "src/content-script/main.ts"
-      ],
-      "run_at": "document_idle"
-    }
-  ],
   "icons": {
     "16": "one.png",
     "48": "one.png",

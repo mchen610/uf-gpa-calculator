@@ -17,16 +17,18 @@ async function setCachedTranscript(transcript: UnofficialTranscriptResponse): Pr
 }
 
 async function fetchTranscript(): Promise<UnofficialTranscriptResponse | undefined> {
-  const [{ id, url }] = await chrome.tabs.query({ active: true, currentWindow: true })
-  if (id === undefined || url === undefined) return undefined
+  const response = await fetch('https://one.uf.edu/api/transcript/getunofficialtranscript', {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json, text/plain, */*',
+      Referer: 'https://one.uf.edu/transcript/',
+    },
+    credentials: 'include',
+  })
 
-  if (!url.includes('one.uf.edu')) return undefined
+  if (!response.ok) return undefined
 
-  try {
-    return await chrome.tabs.sendMessage(id, { type: 'getTranscript' })
-  } catch {
-    return undefined
-  }
+  return response.json()
 }
 
 export async function getUnofficialTranscript(): Promise<UnofficialTranscriptResponse | undefined> {
