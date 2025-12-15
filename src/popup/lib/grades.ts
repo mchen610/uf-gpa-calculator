@@ -2,7 +2,11 @@ import { typedKeys } from '$shared/typeUtils'
 import { sum } from '$shared/utils'
 import type { PendingCourse, ProjectionDetails } from '$shared/types'
 
-export const GRADE_POINTS = {
+/**
+ * https://catalog.ufl.edu/UGRD/academic-regulations/grades-grading-policies/
+ */
+const GRADES_THAT_COUNT = {
+  // Passing
   A: 4.0,
   'A-': 3.67,
   'B+': 3.33,
@@ -15,7 +19,21 @@ export const GRADE_POINTS = {
   D: 1.0,
   'D-': 0.67,
   E: 0.0,
+  WF: 0.0,
+  I: 0.0,
+  NG: 0.0,
 } as const
+
+const GRADES_THAT_DONT_COUNT = {
+  S: 0.0,
+  U: 0.0,
+  W: 0.0,
+  H: 0.0,
+  'I*': 0.0,
+  'N*': 0.0,
+} as const
+
+export const GRADE_POINTS = { ...GRADES_THAT_COUNT, ...GRADES_THAT_DONT_COUNT } as const
 
 export type Grade = keyof typeof GRADE_POINTS
 
@@ -32,7 +50,7 @@ export function normalizeGradeInput(raw: string | undefined): Grade | undefined 
 export function computeProjection(courses: PendingCourse[]): ProjectionDetails {
   const userInputs = courses.map((course) => {
     const { credits, grade } = course
-    const points = grade ? GRADE_POINTS[grade] : undefined
+    const points = grade && grade in GRADES_THAT_COUNT ? GRADE_POINTS[grade] : undefined
     return points !== undefined ? { credits, points } : undefined
   })
 
@@ -41,5 +59,3 @@ export function computeProjection(courses: PendingCourse[]): ProjectionDetails {
     addedCreditHours: sum(userInputs, (input) => (input === undefined ? 0 : input.credits)),
   }
 }
-
-
