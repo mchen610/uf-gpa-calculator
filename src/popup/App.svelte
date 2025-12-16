@@ -270,7 +270,7 @@
           >
             log back in to one.uf
           </a>
-          to refresh.
+          first.
         </div>
       </div>
     {:else}
