@@ -202,15 +202,12 @@
     await fetchSnapshot()
   }
 
-  async function applySnapshot({
-    snapshot: { gradePoints, creditHours, term, level, pendingCourses: snapshotCourses },
-    cached,
-  }: {
-    snapshot: DegreeSnapshot
-    cached: boolean
-  }): Promise<void> {
-    if (!cached && snapshotCourses.some((c) => c.grade)) {
-      const { addedGradePoints, addedCreditHours } = computeProjection(snapshotCourses)
+  async function applySnapshot(args: { snapshot: DegreeSnapshot; cached: boolean }): Promise<void> {
+    const { snapshot, cached } = args
+    const { gradePoints, creditHours, term, level } = snapshot
+
+    if (!cached && snapshot.pendingCourses.some((c) => c.grade)) {
+      const { addedGradePoints, addedCreditHours } = computeProjection(snapshot.pendingCourses)
       const newGpa = calculateProjectedGpa({
         gradePoints,
         creditHours,
@@ -228,7 +225,7 @@
       showMoreDetails: savedShowMoreDetails,
     } = await loadLocalState()
     showMoreDetails = savedShowMoreDetails
-    pendingCourses = snapshotCourses.map((course) => ({
+    pendingCourses = snapshot.pendingCourses.map((course) => ({
       ...course,
       grade: course.grade ?? normalizeGradeInput(savedInputs[course.id] ?? ''),
     }))
