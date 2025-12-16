@@ -5,6 +5,8 @@
     GRADE_POINTS,
     normalizeGradeInput,
     computeProjection,
+    calculateGpa,
+    calculateProjectedGpa,
     isValidGrade,
     type Grade,
     GRADES_THAT_DONT_COUNT,
@@ -208,8 +210,13 @@
     cached: boolean
   }): Promise<void> {
     if (!cached && snapshotCourses.some((c) => c.grade)) {
-      const projection = computeProjection(snapshotCourses)
-      const newGpa = (gradePoints + projection.addedGradePoints) / (creditHours + projection.addedCreditHours)
+      const { addedGradePoints, addedCreditHours } = computeProjection(snapshotCourses)
+      const newGpa = calculateProjectedGpa({
+        gradePoints,
+        creditHours,
+        addedGradePoints,
+        addedCreditHours,
+      })
       toast.info(`${term} grades are in. your gpa is now a ${round(newGpa)}.`)
     }
 
@@ -293,7 +300,7 @@
           <p class="text-xs text-slate-400 mb-0.5">current gpa</p>
           <p>
             <span class="text-sm text-slate-700">
-              {round(current.gradePoints / current.creditHours)}
+              {round(calculateGpa({ ...current }))}
             </span>
             {#if showMoreDetails}
               <span class="text-xxs text-slate-400 font-normal tracking-wider inline-flex gap-0.5">
@@ -321,10 +328,7 @@
             <p class="text-xs text-indigo-400 mb-0.5">projected gpa</p>
             <p>
               <span class="text-sm font-medium text-indigo-500">
-                {round(
-                  (current.gradePoints + projection.addedGradePoints) /
-                    (current.creditHours + projection.addedCreditHours),
-                )}
+                {round(calculateProjectedGpa({ ...current, ...projection }))}
               </span>
               {#if showMoreDetails}
                 <span class="text-xxs text-indigo-300 font-normal tracking-wider inline-flex gap-0.5">

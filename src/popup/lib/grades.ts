@@ -1,6 +1,6 @@
 import { typedKeys } from '$shared/typeUtils'
 import { sum } from '$shared/utils'
-import type { PendingCourse, ProjectionDetails } from '$shared/types'
+import type { DegreeSnapshot, PendingCourse, ProjectionDetails } from '$shared/types'
 
 /**
  * https://catalog.ufl.edu/UGRD/academic-regulations/grades-grading-policies/
@@ -58,4 +58,19 @@ export function computeProjection(courses: PendingCourse[]): ProjectionDetails {
     addedGradePoints: sum(userInputs, (input) => (input === undefined ? 0 : input.points * input.credits)),
     addedCreditHours: sum(userInputs, (input) => (input === undefined ? 0 : input.credits)),
   }
+}
+
+export function calculateGpa(args: { gradePoints: number; creditHours: number }): number {
+  const { gradePoints, creditHours } = args
+  return gradePoints / creditHours
+}
+
+export function calculateProjectedGpa(args: {
+  gradePoints: number
+  creditHours: number
+  addedGradePoints: number
+  addedCreditHours: number
+}): number {
+  const { gradePoints, creditHours, addedGradePoints, addedCreditHours } = args
+  return (gradePoints + addedGradePoints) / (creditHours + addedCreditHours)
 }
