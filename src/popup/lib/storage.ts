@@ -9,12 +9,14 @@ export type LocalState = {
   rawUserInputs: Record<number, string | undefined>
   lastFocusedCourseId: 'unset' | number
   transcriptCache: TranscriptCache | Record<string, never>
+  showMoreDetails: boolean
 }
 
 const DEFAULT_STATE: LocalState = {
   rawUserInputs: {},
   lastFocusedCourseId: 'unset',
   transcriptCache: {},
+  showMoreDetails: false,
 }
 
 export async function loadLocalState(): Promise<LocalState> {

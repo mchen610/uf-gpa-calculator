@@ -24,7 +24,7 @@
   let rawUserInputs: Record<string, string | undefined> = {}
 
   let selectAll = false
-  let advancedMode = false
+  let showMoreDetails = false
   let showOptions = false
   let anyGradeInputFocused = false
 
@@ -209,7 +209,12 @@
     const { gradePoints, creditHours, term, level } = data
     current = { gradePoints, creditHours, term, level }
 
-    const { rawUserInputs: savedInputs, lastFocusedCourseId } = await loadLocalState()
+    const {
+      rawUserInputs: savedInputs,
+      lastFocusedCourseId,
+      showMoreDetails: savedShowMoreDetails,
+    } = await loadLocalState()
+    showMoreDetails = savedShowMoreDetails
     pendingCourses = data.pendingCourses.map((course) => ({
       ...course,
       grade: course.grade ?? normalizeGradeInput(savedInputs[course.id] ?? ''),
@@ -273,7 +278,7 @@
             <span class="text-sm text-slate-700">
               {round(current.gradePoints / current.creditHours)}
             </span>
-            {#if advancedMode}
+            {#if showMoreDetails}
               <span class="text-xxs text-slate-400 font-normal tracking-wider inline-flex gap-0.5">
                 <span>{round(current.gradePoints)} grade points</span>
                 <span>/</span>
@@ -304,7 +309,7 @@
                     (current.creditHours + projection.addedCreditHours),
                 )}
               </span>
-              {#if advancedMode}
+              {#if showMoreDetails}
                 <span class="text-xxs text-indigo-300 font-normal tracking-wider inline-flex gap-0.5">
                   <span>
                     {round(current.gradePoints + projection.addedGradePoints, 2)} grade points
@@ -343,10 +348,11 @@
                   >
                     <input
                       type="checkbox"
-                      bind:checked={advancedMode}
+                      bind:checked={showMoreDetails}
+                      on:change={() => saveLocalState({ showMoreDetails })}
                       class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-3 w-3 cursor-pointer"
                     />
-                    show details
+                    more details
                   </label>
                   <label
                     class="flex items-center gap-1.5 text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer text-nowrap"
@@ -420,7 +426,7 @@
                     on:blur={() => (anyGradeInputFocused = false)}
                     maxlength="2"
                   />
-                  {#if advancedMode}
+                  {#if showMoreDetails}
                     <span
                       class={cn(
                         'absolute -bottom-4 left-1/2 -translate-x-1/2 text-xxs tabular-nums',
