@@ -402,7 +402,7 @@
             </button>
           </div>
         {:else}
-          <ul class="flex flex-col gap-0.5 group">
+          <ul class="flex flex-col gap-0.5 group pb-2">
             {#each pendingCourses as course, index}
               {@const inputState = getInputState(course.id)}
               <li class="flex items-center gap-3 py-1.5">
