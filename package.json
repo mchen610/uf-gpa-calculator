@@ -31,6 +31,7 @@
     "@crxjs/vite-plugin": "^2.3.0",
     "clsx": "^2.1.1",
     "lucide-svelte": "^0.561.0",
+    "svelte-sonner": "^1.0.7",
     "tailwind-merge": "^3.4.0"
   }
 }

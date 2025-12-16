@@ -9,12 +9,13 @@
     type Grade,
     GRADES_THAT_DONT_COUNT,
   } from './lib/grades'
-  import { getDegreeSnapshot, refreshDegreeSnapshot } from './lib/api'
+  import { getDegreeSnapshot } from './lib/api'
   import { loadLocalState, saveLocalState } from './lib/storage'
   import { round } from '$shared/utils'
   import { cn } from './lib/utils'
   import { typedKeys } from '$shared/typeUtils'
   import { X, RotateCcw, ChevronDown } from 'lucide-svelte'
+  import { Toaster, toast } from 'svelte-sonner'
 
   const VALID_GRADES = ['', ...typedKeys(GRADE_POINTS)]
 
@@ -181,12 +182,12 @@
   }
 
   async function fetchSnapshot(): Promise<void> {
-    const snapshot = await getDegreeSnapshot()
+    const { snapshot, cached } = await getDegreeSnapshot()
 
     isLoadingTranscript = false
 
     if (snapshot) {
-      await applySnapshot(snapshot)
+      await applySnapshot({ snapshot, cached })
     }
   }
 
@@ -194,19 +195,22 @@
     current = undefined
     pendingCourses = []
     isLoadingTranscript = true
-
-    const snapshot = await refreshDegreeSnapshot()
-
-    isLoadingTranscript = false
     showOptions = false
-
-    if (snapshot) {
-      await applySnapshot(snapshot)
-    }
+    await saveLocalState({ transcriptCache: {} })
+    await fetchSnapshot()
   }
 
-  async function applySnapshot(data: DegreeSnapshot): Promise<void> {
-    const { gradePoints, creditHours, term, level } = data
+  async function applySnapshot({
+    snapshot: { gradePoints, creditHours, term, level, pendingCourses: snapshotCourses },
+    cached,
+  }: {
+    snapshot: DegreeSnapshot
+    cached: boolean
+  }): Promise<void> {
+    if (!cached && snapshotCourses.some((c) => c.grade)) {
+      toast.info(`your ${term} grades are in.`)
+    }
+
     current = { gradePoints, creditHours, term, level }
 
     const {
@@ -215,7 +219,7 @@
       showMoreDetails: savedShowMoreDetails,
     } = await loadLocalState()
     showMoreDetails = savedShowMoreDetails
-    pendingCourses = data.pendingCourses.map((course) => ({
+    pendingCourses = snapshotCourses.map((course) => ({
       ...course,
       grade: course.grade ?? normalizeGradeInput(savedInputs[course.id] ?? ''),
     }))
@@ -238,8 +242,16 @@
 
 <svelte:window on:keydown={handleKeydown} />
 
+<Toaster
+  position="top-center"
+  toastOptions={{
+    style: 'font-size: 12px; padding-bottom: 8px; padding-top: 8px;',
+  }}
+  richColors
+/>
+
 <main class={cn('min-w-96', 'font-sans bg-white text-slate-800', 'selection:bg-indigo-50 selection:text-indigo-900')}>
-  <div class="mx-auto w-full max-w-md flex-col p-6 pb-3 space-y-2">
+  <div class="mx-auto w-full max-w-md flex-col p-6 pb-5 space-y-2">
     <header class="flex flex-col gap-1 mb-4">
       <div class="group/header flex items-center justify-between">
         <span class="text-sm font-medium text-slate-700">one.uf gpa calculator</span>
@@ -405,7 +417,7 @@
             </button>
           </div>
         {:else}
-          <ul class="flex flex-col gap-0.5 group pb-2">
+          <ul class="flex flex-col gap-0.5 group">
             {#each pendingCourses as course, index}
               {@const inputState = getInputState(course.id)}
               <li class="flex items-center gap-3 py-1.5">

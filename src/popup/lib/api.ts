@@ -32,13 +32,16 @@ async function fetchTranscript(): Promise<UnofficialTranscriptResponse | undefin
   return response.json()
 }
 
-export async function getUnofficialTranscript(): Promise<UnofficialTranscriptResponse | undefined> {
+export async function getUnofficialTranscript(): Promise<{
+  response: UnofficialTranscriptResponse | undefined
+  cached: boolean
+}> {
   const cached = await getCachedTranscript()
-  if (cached) return cached
+  if (cached) return { response: cached, cached: true }
 
   const fresh = await fetchTranscript()
   if (fresh) await setCachedTranscript(fresh)
-  return fresh
+  return { response: fresh, cached: false }
 }
 
 function parseTranscriptToSnapshot(transcript: UnofficialTranscriptResponse): DegreeSnapshot | undefined {
@@ -86,19 +89,16 @@ function parseTranscriptToSnapshot(transcript: UnofficialTranscriptResponse): De
   return {
     gradePoints,
     creditHours,
-    term: currentTerm.termDescription,
-    level: currentTerm.level,
+    term: currentTerm.termDescription.toLowerCase(),
+    level: currentTerm.level.toLowerCase(),
     pendingCourses,
   }
 }
 
-export async function getDegreeSnapshot(): Promise<DegreeSnapshot | undefined> {
-  const transcript = await getUnofficialTranscript()
-  if (!transcript) return undefined
-  return parseTranscriptToSnapshot(transcript)
-}
-
-export async function refreshDegreeSnapshot(): Promise<DegreeSnapshot | undefined> {
-  await saveLocalState({ transcriptCache: {} })
-  return getDegreeSnapshot()
+export async function getDegreeSnapshot(): Promise<{
+  snapshot: DegreeSnapshot | undefined
+  cached: boolean
+}> {
+  const { response, cached } = await getUnofficialTranscript()
+  return { snapshot: response ? parseTranscriptToSnapshot(response) : undefined, cached }
 }
