@@ -208,7 +208,9 @@
     cached: boolean
   }): Promise<void> {
     if (!cached && snapshotCourses.some((c) => c.grade)) {
-      toast.info(`your ${term} grades are in.`)
+      const projection = computeProjection(snapshotCourses)
+      const newGpa = (gradePoints + projection.addedGradePoints) / (creditHours + projection.addedCreditHours)
+      toast.info(`your ${term} grades are in. your gpa is now a ${round(newGpa)}.`)
     }
 
     current = { gradePoints, creditHours, term, level }
