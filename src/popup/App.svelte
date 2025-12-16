@@ -243,6 +243,9 @@
     <header class="flex flex-col gap-1 mb-4">
       <div class="group/header flex items-center justify-between">
         <span class="text-sm font-medium text-slate-700">one.uf gpa calculator</span>
+        {#if current?.term}
+          <span class="text-xs text-slate-400">{current.term}</span>
+        {/if}
       </div>
       {#if current !== undefined}
         <p class="text-xs text-slate-400">type a grade (A, B+, C...) or use arrow keys to navigate.</p>
