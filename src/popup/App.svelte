@@ -32,6 +32,7 @@
   let anyGradeInputFocused = false
 
   let isLoadingTranscript = true
+  let semesterIsOver = false
 
   let projection: ProjectionDetails = {
     addedGradePoints: 0,
@@ -197,6 +198,7 @@
     current = undefined
     pendingCourses = []
     isLoadingTranscript = true
+    semesterIsOver = false
     showOptions = false
     await saveLocalState({ transcriptCache: {} })
     await fetchSnapshot()
@@ -206,15 +208,18 @@
     const { snapshot, cached } = args
     const { gradePoints, creditHours, term, level } = snapshot
 
-    if (!cached && snapshot.pendingCourses.some((c) => c.grade)) {
-      const { addedGradePoints, addedCreditHours } = computeProjection(snapshot.pendingCourses)
-      const newGpa = calculateProjectedGpa({
-        gradePoints,
-        creditHours,
-        addedGradePoints,
-        addedCreditHours,
-      })
-      toast.info(`${term} grades are in. your gpa is now a ${round(newGpa)}.`)
+    if (snapshot.pendingCourses.some((c) => c.grade)) {
+      semesterIsOver = true
+      if (!cached) {
+        const { addedGradePoints, addedCreditHours } = computeProjection(snapshot.pendingCourses)
+        const newGpa = calculateProjectedGpa({
+          gradePoints,
+          creditHours,
+          addedGradePoints,
+          addedCreditHours,
+        })
+        toast.info(`${term} grades are in. your gpa is now a ${round(newGpa)}.`)
+      }
     }
 
     current = { gradePoints, creditHours, term, level }
@@ -294,7 +299,7 @@
     {:else}
       <div class="flex items-end justify-between">
         <div>
-          <p class="text-xs text-slate-400 mb-0.5">current gpa</p>
+          <p class="text-xs text-slate-400 mb-0.5">{semesterIsOver ? 'previous' : 'current'} gpa</p>
           <p>
             <span class="text-sm text-slate-700">
               {round(calculateGpa({ ...current }))}
@@ -322,7 +327,7 @@
       <section>
         <div class="flex items-start justify-between mb-2">
           <div>
-            <p class="text-xs text-indigo-400 mb-0.5">projected gpa</p>
+            <p class="text-xs text-indigo-400 mb-0.5">{semesterIsOver ? 'current' : 'projected'} gpa</p>
             <p>
               <span class="text-sm font-medium text-indigo-500">
                 {round(calculateProjectedGpa({ ...current, ...projection }))}
