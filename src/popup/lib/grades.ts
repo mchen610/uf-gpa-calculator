@@ -60,9 +60,17 @@ export function computeProjection(courses: PendingCourse[]): ProjectionDetails {
   }
 }
 
+/**
+ * https://catalog.ufl.edu/UGRD/academic-regulations/grades-grading-policies/#gradingpoliciestext
+ * UF truncates GPA to hundredths place. Does not round up.
+ */
+function truncateToHundredths(value: number): number {
+  return Math.floor(value * 100) / 100
+}
+
 export function calculateGpa(args: { gradePoints: number; creditHours: number }): number {
   const { gradePoints, creditHours } = args
-  return gradePoints / creditHours
+  return truncateToHundredths(gradePoints / creditHours)
 }
 
 export function calculateProjectedGpa(args: {
@@ -72,5 +80,5 @@ export function calculateProjectedGpa(args: {
   addedCreditHours: number
 }): number {
   const { gradePoints, creditHours, addedGradePoints, addedCreditHours } = args
-  return (gradePoints + addedGradePoints) / (creditHours + addedCreditHours)
+  return truncateToHundredths((gradePoints + addedGradePoints) / (creditHours + addedCreditHours))
 }
