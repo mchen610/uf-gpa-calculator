@@ -267,7 +267,7 @@
       <div class="group/header flex items-center justify-between">
         <span class="text-sm font-medium text-slate-700">one.uf gpa calculator</span>
         {#if current?.term}
-          <span class="text-xs text-slate-400">{current.term}</span>
+          <span class="text-xs text-slate-400">{current.term} ({semesterIsOver ? 'completed' : 'in progress'})</span>
         {/if}
       </div>
       {#if current !== undefined}
