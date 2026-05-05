@@ -20,8 +20,6 @@ export const GRADES_THAT_COUNT = {
   'D-': 0.67,
   E: 0.0,
   WF: 0.0,
-  I: 0.0,
-  NG: 0.0,
 } as const
 
 export const GRADES_THAT_DONT_COUNT = {
@@ -29,6 +27,8 @@ export const GRADES_THAT_DONT_COUNT = {
   U: 0.0,
   W: 0.0,
   H: 0.0,
+  I: 0.0,
+  NG: 0.0,
   'I*': 0.0,
   'N*': 0.0,
 } as const
