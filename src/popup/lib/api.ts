@@ -7,17 +7,20 @@ const CACHE_TTL_MS = 24 * 60 * 60 * 1000
 
 async function getCachedTranscript(): Promise<UnofficialTranscriptResponse | undefined> {
   const { transcriptCache } = await loadLocalState()
-  if (!transcriptCache) return undefined
+  if (!('timestamp' in transcriptCache)) return undefined
 
   const isExpired = Date.now() - transcriptCache.timestamp > CACHE_TTL_MS
-  return isExpired ? undefined : transcriptCache.transcript
+  if (isExpired) return undefined
+  if (!transcriptCache.transcript.records) return undefined
+  return transcriptCache.transcript
 }
 
 async function setCachedTranscript(transcript: UnofficialTranscriptResponse): Promise<void> {
+  if (!transcript.records) return
   await saveLocalState({ transcriptCache: { transcript, timestamp: Date.now() } })
 }
 
-async function fetchTranscript(): Promise<UnofficialTranscriptResponse | undefined> {
+async function fetchTranscript(signal?: AbortSignal): Promise<UnofficialTranscriptResponse | undefined> {
   const response = await fetch('https://one.uf.edu/api/transcript/getunofficialtranscript', {
     method: 'GET',
     headers: {
@@ -25,6 +28,7 @@ async function fetchTranscript(): Promise<UnofficialTranscriptResponse | undefin
       Referer: 'https://one.uf.edu/transcript/',
     },
     credentials: 'include',
+    signal,
   })
 
   if (!response.ok) return undefined
@@ -32,19 +36,20 @@ async function fetchTranscript(): Promise<UnofficialTranscriptResponse | undefin
   return response.json()
 }
 
-export async function getUnofficialTranscript(): Promise<{
+export async function getUnofficialTranscript(signal?: AbortSignal): Promise<{
   response: UnofficialTranscriptResponse | undefined
   cached: boolean
 }> {
   const cached = await getCachedTranscript()
   if (cached) return { response: cached, cached: true }
 
-  const fresh = await fetchTranscript()
+  const fresh = await fetchTranscript(signal)
   if (fresh) await setCachedTranscript(fresh)
   return { response: fresh, cached: false }
 }
 
 function parseTranscriptToSnapshot(transcript: UnofficialTranscriptResponse): DegreeSnapshot | undefined {
+  if (!transcript.records) return undefined
   const records = Object.values(transcript.records).filter((r) => r !== undefined)
   const record = records.sort((a, b) => (b.terms.at(-1)?.termCode ?? 0) - (a.terms.at(-1)?.termCode ?? 0))[0]
   if (!record) return undefined
@@ -95,10 +100,10 @@ function parseTranscriptToSnapshot(transcript: UnofficialTranscriptResponse): De
   }
 }
 
-export async function getDegreeSnapshot(): Promise<{
+export async function getDegreeSnapshot(signal?: AbortSignal): Promise<{
   snapshot: DegreeSnapshot | undefined
   cached: boolean
 }> {
-  const { response, cached } = await getUnofficialTranscript()
+  const { response, cached } = await getUnofficialTranscript(signal)
   return { snapshot: response ? parseTranscriptToSnapshot(response) : undefined, cached }
 }

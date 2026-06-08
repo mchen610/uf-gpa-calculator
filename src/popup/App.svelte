@@ -32,6 +32,8 @@
   let anyGradeInputFocused = false
 
   let isLoadingTranscript = true
+  let loadCancelled = false
+  let abortController: AbortController | undefined = undefined
   let semesterIsOver = false
 
   let projection: ProjectionDetails = {
@@ -185,12 +187,20 @@
   }
 
   async function fetchSnapshot(): Promise<void> {
-    const { snapshot, cached } = await getDegreeSnapshot()
-
-    isLoadingTranscript = false
-
-    if (snapshot) {
-      await applySnapshot({ snapshot, cached })
+    abortController = new AbortController()
+    try {
+      const { snapshot, cached } = await getDegreeSnapshot(abortController.signal)
+      isLoadingTranscript = false
+      if (snapshot) {
+        await applySnapshot({ snapshot, cached })
+      }
+    } catch (err) {
+      isLoadingTranscript = false
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        loadCancelled = true
+      }
+    } finally {
+      abortController = undefined
     }
   }
 
@@ -198,10 +208,15 @@
     current = undefined
     pendingCourses = []
     isLoadingTranscript = true
+    loadCancelled = false
     semesterIsOver = false
     showOptions = false
     await saveLocalState({ transcriptCache: {} })
     await fetchSnapshot()
+  }
+
+  function handleCancelLoad(): void {
+    abortController?.abort()
   }
 
   async function applySnapshot(args: { snapshot: DegreeSnapshot; cached: boolean }): Promise<void> {
@@ -280,7 +295,24 @@
         <div class="flex flex-col items-center gap-3">
           <div class="h-5 w-5 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-600"></div>
           <p class="text-xs text-slate-500">loading your transcript from one.uf...</p>
+          <button
+            on:click={handleCancelLoad}
+            class="text-xxs text-slate-400 hover:text-slate-600 transition-colors tracking-wide cursor-pointer"
+          >
+            cancel
+          </button>
         </div>
+      </div>
+    {:else if loadCancelled}
+      <div class="h-28 flex flex-col items-center justify-center gap-2 text-center">
+        <p class="text-xs text-slate-400">transcript load cancelled.</p>
+        <button
+          on:click={handleRefresh}
+          class="flex items-center gap-1 text-xs text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+        >
+          <RotateCcw size={12} strokeWidth={2} />
+          try again
+        </button>
       </div>
     {:else if current === undefined}
       <div class="h-28 flex flex-col items-center justify-center text-center">

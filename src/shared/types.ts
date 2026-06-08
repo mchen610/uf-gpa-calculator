@@ -81,5 +81,5 @@ export interface TranscriptRecord {
 
 export type TranscriptRecords = Record<string, TranscriptRecord | undefined>
 export interface UnofficialTranscriptResponse {
-  records: TranscriptRecords
+  records?: TranscriptRecords
 }
